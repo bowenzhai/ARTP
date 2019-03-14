@@ -1,5 +1,7 @@
 #pragma once
 
+#include <thread>
+
 #include <glm/glm.hpp>
 
 #include "SceneNode.hpp"
@@ -26,14 +28,18 @@ public:
     glm::vec3 & ambient;
     std::list<Light *> lights;
 
+    // Num workers
+    int num_workers;
+
     RayTracer(SceneNode * root,
-        Image & image,
-        glm::vec3 & eye,
-        glm::vec3 & view,
-        glm::vec3 & up,
-        double fovy,
-        glm::vec3 & ambient,
-        std::list<Light *> & lights): root(root), image(image), eye(eye), view(view), up(up), fovy(fovy), ambient(ambient), lights(lights) {}
+            Image & image,
+            glm::vec3 & eye,
+            glm::vec3 & view,
+            glm::vec3 & up,
+            double fovy,
+            glm::vec3 & ambient,
+            std::list<Light *> & lights,
+            int num_workers): root(root), image(image), eye(eye), view(view), up(up), fovy(fovy), ambient(ambient), lights(lights), num_workers(num_workers) {}
 
     void transformToWorld(glm::vec3 &coords);
 

@@ -3,6 +3,7 @@
 #include <glm/ext.hpp>
 
 #include "RayTracer.hpp"
+#include "RayTracerWorker.hpp"
 
 using namespace std;
 
@@ -56,36 +57,22 @@ void RayTracer::render() {
 		std::cout << "\t\t" <<  *light << std::endl;
 	}
 	std::cout << "\t}" << std::endl;
-	std:: cout <<")" << std::endl;
+	std::cout << "\t" << "num_workers:" << num_workers << std::endl;
+	std::cout <<")" << std::endl;
 
-	size_t h = image.height();
-	size_t w = image.width();
+	RayTracerWorker *workers[num_workers];
+	thread threads[num_workers];
+	for (int i = 0; i < num_workers; ++i) {
+		workers[i] = new RayTracerWorker(i, this);
+		threads[i] = thread(&RayTracerWorker::launch, workers[i]);
+	}
+	
+	for (int i = 0; i < num_workers; ++i) {
+		// cout << "progress: [";
+		
+		// cout << "];"
+		// << (float)completed / (float)(h * w) * 100 << "\%" << endl;
 
-	int completed = 0;
-
-	for (uint y = 0; y < h; ++y) {
-		for (uint x = 0; x < w; ++x) {
-			// generate the ray
-			vec3 pixel = {x, y, 0.0f};
-			transformToWorld(pixel);
-			vec3 dir = pixel - eye;
-			dir = glm::normalize(dir);
-			Ray ray = Ray(eye, dir, x, y);
-			//cout << ray << endl;
-
-			vec3 color;
-			color = ray.getColor(root, lights, ambient, 0);
-
-			// Red: 
-			image(x, y, 0) = (double)(color.x);
-			// Green: 
-			image(x, y, 1) = (double)(color.y);
-			// Blue: 
-			image(x, y, 2) = (double)(color.z);
-
-			++completed;
-
-			cout << "rendered " << (float)completed / (float)(h * w) * 100 << "\%" << endl;
-		}
+		threads[i].join();
 	}
 }
