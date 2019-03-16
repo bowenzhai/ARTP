@@ -9,6 +9,39 @@ using namespace std;
 
 using namespace glm;
 
+void RayTracer::flattenScene(SceneNode * node) {
+	mat4 new_matrix(matrix_stack.top());
+	//new_matrix = node->trans * new_matrix;
+	new_matrix = new_matrix * node->trans;	
+	if (node->m_nodeType == NodeType::JointNode) {
+		JointNode *jointNode = static_cast<JointNode *>(node);
+		mat4 id(1.0f);
+		float degree = jointNode->m_joint_x.init;
+		new_matrix = glm::rotate(new_matrix, radians(degree), vec3(1, 0, 0));
+	}
+
+    //cout << glm::to_string(new_matrix) << endl;
+	matrix_stack.push(new_matrix);
+
+	if (node->m_nodeType == NodeType::GeometryNode) {
+		GeometryNode *geometryNode = static_cast<GeometryNode *>(node);
+        geometryNode->m_primitive->curr_transform = new_matrix;
+		root_flattened->add_child(geometryNode);
+	}
+
+	for (auto child : node->children) {
+        flattenScene(child);
+	}
+
+	matrix_stack.pop();
+
+	// done flattening, replace root
+	if (node->m_name == "root") {
+		delete root;
+		root = root_flattened;
+	}
+}
+
 void RayTracer::transformToWorld(glm::vec3 &coords) {
 	float n_x = image.width();
 	float n_y = image.height();
@@ -59,6 +92,16 @@ void RayTracer::render() {
 	std::cout << "\t}" << std::endl;
 	std::cout << "\t" << "num_workers:" << num_workers << std::endl;
 	std::cout <<")" << std::endl;
+
+	// flatten scene
+	matrix_stack.push(glm::mat4(1.0f));
+	// shallow copy root node
+	root_flattened = new SceneNode(root->m_name);
+	root_flattened->m_nodeType = root->m_nodeType;
+	root_flattened->m_name = root->m_name;
+	root_flattened->trans = root->trans;
+	root_flattened->invtrans = root->invtrans;
+	flattenScene(root);
 
 	RayTracerWorker *workers[num_workers];
 	thread threads[num_workers];

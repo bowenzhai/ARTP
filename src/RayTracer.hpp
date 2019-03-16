@@ -31,6 +31,9 @@ public:
     // Num workers
     int num_workers;
 
+    SceneNode *root_flattened;
+    std::stack<glm::mat4> matrix_stack;
+
     RayTracer(SceneNode * root,
             Image & image,
             glm::vec3 & eye,
@@ -40,6 +43,8 @@ public:
             glm::vec3 & ambient,
             std::list<Light *> & lights,
             int num_workers): root(root), image(image), eye(eye), view(view), up(up), fovy(fovy), ambient(ambient), lights(lights), num_workers(num_workers) {}
+
+    void flattenScene(SceneNode * root);
 
     void transformToWorld(glm::vec3 &coords);
 

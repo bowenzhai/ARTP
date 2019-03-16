@@ -47,56 +47,7 @@ GeometryNode *Ray::hit(SceneNode * root, float &t, vec3 &N)  {
     }
 
     return hit_object;
-}
-
-GeometryNode *Ray::hit_hier(SceneNode * root, float &t, glm::vec3 &N) {
-    //cout << *root << endl;
-    float t_min = INT_MAX;
-    GeometryNode *hit_object = nullptr;
-
-    mat4 new_matrix(matrix_stack.top());
-	new_matrix = new_matrix * root->trans;
-
-	if (root->m_nodeType == NodeType::JointNode) {
-		JointNode *jointNode = static_cast<JointNode *>(root);
-		mat4 id(1.0f);
-		float degree = jointNode->m_joint_x.init;
-		new_matrix = glm::rotate(new_matrix, radians(degree), vec3(1, 0, 0));
-	}
-
-    //cout << glm::to_string(new_matrix) << endl;
-	matrix_stack.push(new_matrix);
-
-	if (root->m_nodeType == NodeType::GeometryNode) {
-		GeometryNode *geometryNode = static_cast<GeometryNode *>(root);
-        geometryNode->m_primitive->curr_transform = new_matrix;
-        float t_curr;
-        vec3 N_curr;
-        if (geometryNode->m_primitive->beHitBy(orig, dir, t_curr, N_curr) && t_curr < t_min) {
-            hit_object = geometryNode;
-            t_min = t_curr;
-            t = t_min;
-            N = N_curr;
-        }
-	}
-
-	for (auto child : root->children) {
-        float t_curr;
-        vec3 N_curr;
-        GeometryNode *hit_object_curr = hit_hier(child, t_curr, N_curr);
-		if (hit_object_curr != nullptr && t_curr < t_min) {
-            hit_object = hit_object_curr;
-            t_min = t_curr;
-            t = t_min;
-            N = N_curr;
-        }
-	}
-
-	matrix_stack.pop();
-
-    return hit_object;
-}
-    
+}    
 
 vec3 Ray::getColor(SceneNode * root, list<Light *> lights, vec3 & ambient, int maxHits) {
     vec3 color;
@@ -106,7 +57,7 @@ vec3 Ray::getColor(SceneNode * root, list<Light *> lights, vec3 & ambient, int m
 	vec3 N;
 	vec3 p;
 	float t;
-    GeometryNode *hit_object = hit_hier(root, t, N);
+    GeometryNode *hit_object = hit(root, t, N);
     if (hit_object != nullptr) {
         PhongMaterial *phongMaterial = static_cast<PhongMaterial *>(hit_object->m_material);
         kd = phongMaterial->m_kd;
@@ -119,7 +70,7 @@ vec3 Ray::getColor(SceneNode * root, list<Light *> lights, vec3 & ambient, int m
             Ray reverse_light = Ray(p + N * BIAS, glm::normalize(light->position - p), x, y);
             vec3 N_reverse;
             float t_reverse;
-            if (reverse_light.hit_hier(root, t_reverse, N_reverse) != nullptr) {
+            if (reverse_light.hit(root, t_reverse, N_reverse) != nullptr) {
                 continue;
             }
 

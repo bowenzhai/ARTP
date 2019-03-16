@@ -13,16 +13,13 @@
 
 class Ray {
 public:
-    Ray(glm::vec3 orig, glm::vec3 dir, int x, int y): orig(orig), dir(dir), x(x), y(y) {
-        matrix_stack.push(glm::mat4(1.0f));
-    };
+    Ray(glm::vec3 orig, glm::vec3 dir, int x, int y): orig(orig), dir(dir), x(x), y(y) {};
     glm::vec3 genBG();
-    std::stack<glm::mat4> matrix_stack;
+    
     static const int MAX_HITS;
     static const float BIAS;
     static Ray ggReflection(const glm::vec3 &p, const glm::vec3 &dir, const glm::vec3 &N, int x, int y);
     GeometryNode *hit(SceneNode * root, float &t, glm::vec3 &N);
-    GeometryNode *hit_hier(SceneNode * root, float &t, glm::vec3 &N);
     glm::vec3 getColor(SceneNode * root, std::list<Light *> lights, glm::vec3 & ambient, int maxHits);
     friend std::ostream& operator<<(std::ostream& out, const Ray& ray);
     glm::vec3 pointAt(float t);

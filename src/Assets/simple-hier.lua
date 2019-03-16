@@ -15,7 +15,7 @@ s1:set_material(mat1)
 -- s1:rotate('z', 45.0)
 
 n1 = gr.node('n1')
-n1:translate(0.0, 0.1, 0.0)
+n1:translate(0.1, -0.1, 0.0)
 scene_root:add_child(n1)
 
 s2 = gr.sphere('s2')
