@@ -25,19 +25,23 @@ Sphere::~Sphere()
 
 bool Sphere::beHitBy(glm::vec3 orig, glm::vec3 dir, float &t, glm::vec3 &N) {
     mat4 inverse_transform = glm::inverse(curr_transform);
-    //cout << glm::to_string(curr_transform) << endl;
+    vec3 pointingAt = orig + dir;
     vec3 orig_local = (vec3)(inverse_transform * (vec4(orig, 1.0f)));
-    vec3 dir_local = (vec3)(inverse_transform * (vec4(dir, 1.0f)));
+    pointingAt = (vec3)(inverse_transform * (vec4(pointingAt, 1.0f)));
+    vec3 dir_local = pointingAt - orig_local;
+    //vec3 dir_local = dir;
     dir_local = glm::normalize(dir_local);
     NonhierSphere nhs(vec3(0.0f), 1.0f);
     float t_local;
     vec3 N_local;
     if (nhs.beHitBy(orig_local, dir_local, t_local, N_local)) {
-        vec3 p_local = orig_local + t_local * dir_local;
-        vec3 p = (vec3)(curr_transform * vec4(p_local, 1.0f));
-        t = (p - orig).length();
-        N = glm::normalize(vec3(curr_transform * vec4(N_local, 1.0f)));
-        //N = glm::normalize((vec3)(glm::transpose(inverse_transform) * vec4(N_local, 1.0f)));
+        // vec3 p_local = orig_local + t_local * dir_local;
+        // vec3 p = (vec3)(curr_transform * vec4(p_local, 1.0f));
+        // t = (p - orig).length();
+        // N = glm::normalize(vec3(curr_transform * vec4(N_local, 1.0f)));
+        // N = glm::normalize((vec3)(glm::transpose(inverse_transform) * vec4(N_local, 1.0f)));
+        t = t_local;
+        N = N_local;
         return true;
     } else {    
         return false;
