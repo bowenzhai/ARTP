@@ -28,15 +28,15 @@ bool Sphere::beHitBy(glm::vec3 orig, glm::vec3 dir, float &t, glm::vec3 &N) {
     vec3 orig_local = (vec3)(inverse_transform * (vec4(orig, 1.0f)));
     vec3 dir_local = (vec3)(inverse_transform * (vec4(dir, 1.0f)));
     dir_local = glm::normalize(dir_local);
-
     NonhierSphere nhs(vec3(0.0f), 1.0f);
     float t_local;
     vec3 N_local;
     if (nhs.beHitBy(orig_local, dir_local, t_local, N_local)) {
         vec3 p_local = orig_local + t_local * dir_local;
         vec3 p = (vec3)(curr_transform * vec4(p_local, 1.0f));
-        t = glm::dot((p - orig), (1.0f/dir));
+        t = (p - orig).length();
         N = glm::normalize(vec3(curr_transform * vec4(N_local, 1.0f)));
+        return true;
     } else {    
         return false;
     }

@@ -11,9 +11,9 @@ using namespace glm;
 
 vec3 Ray::genBG() {
 	vec3 color(0.0f);
-    color.z = ((float)y / 256.0f);
+    color.z = ((float)y / (float)512);
     int random = rand() % 100;
-    if (random < 2) {
+    if (random < 1) {
         color = vec3(1.0f, 1.0f, 1.0f);
     }
 	return color;
@@ -50,6 +50,7 @@ GeometryNode *Ray::hit(SceneNode * root, float &t, vec3 &N)  {
 }
 
 GeometryNode *Ray::hit_hier(SceneNode * root, float &t, glm::vec3 &N) {
+    //cout << *root << endl;
     float t_min = INT_MAX;
     GeometryNode *hit_object = nullptr;
 
@@ -63,6 +64,7 @@ GeometryNode *Ray::hit_hier(SceneNode * root, float &t, glm::vec3 &N) {
 		new_matrix = glm::rotate(new_matrix, radians(degree), vec3(1, 0, 0));
 	}
 
+    //cout << glm::to_string(new_matrix) << endl;
 	matrix_stack.push(new_matrix);
 
 	if (root->m_nodeType == NodeType::GeometryNode) {
@@ -104,7 +106,6 @@ vec3 Ray::getColor(SceneNode * root, list<Light *> lights, vec3 & ambient, int m
 	vec3 N;
 	vec3 p;
 	float t;
-
     GeometryNode *hit_object = hit_hier(root, t, N);
     if (hit_object != nullptr) {
         PhongMaterial *phongMaterial = static_cast<PhongMaterial *>(hit_object->m_material);

@@ -4,4 +4,4 @@
 
 #include <string>
 
-bool run_lua( const std::string& filename );
+bool run_lua( int num_workers, const std::string& filename );

@@ -5,30 +5,47 @@ using namespace std;
 using namespace glm;
 
 void RayTracerWorker::launch() {
-
     size_t h = parent->image.height();
 	size_t w = parent->image.width();
 
+    // divide img to col * col squares
     int cols = ceil(sqrt(parent->num_workers));
-    //cout << cols << endl;
 
+    // extra pixels
+    int h_extra = h % cols;
+    int w_extra = w % cols;
+    h = h - h_extra;
+    w = w - w_extra;
+
+    // the start pixel of each square rounded down
     int h_index[cols];
     int w_index[cols];
-
     for (int i = 0; i < cols; ++i) {
         h_index[i] = h * ((float)i / (float)cols);
         w_index[i] = w * ((float)i / (float)cols);
     }
 
-    int h_curr = workerId / cols;
-    int w_curr = workerId % cols;
+    // which square to render
+    int row_curr = workerId / cols;
+    int col_curr = workerId % cols;
+
+    // square dimentions rounded down
     int pix_per_block_h = h / cols;
     int pix_per_block_w = w / cols;
 
-    int start_h = h_index[h_curr];
+    // start and end pixel
+    int start_h = h_index[row_curr];
     int end_h = start_h + pix_per_block_h;
-    int start_w = w_index[w_curr];
+    int start_w = w_index[col_curr];
     int end_w = start_w + pix_per_block_w;
+
+    // render exta pixels if last row/col
+    if (row_curr == cols - 1) {
+        end_h += h_extra;
+    }
+    if (col_curr == cols - 1) {
+        end_w += w_extra;
+    }
 
     // cout << "worker " << workerId << endl;
     // cout << start_h <<  " " << end_h << endl;
@@ -58,5 +75,5 @@ void RayTracerWorker::launch() {
 		}
 	}
 
-    cout << "Worker " << workerId << " finished" << endl;
+    cout << "worker " << workerId << " finished" << endl;
 }

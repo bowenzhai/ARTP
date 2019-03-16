@@ -43,7 +43,7 @@ void RayTracer::render() {
 
   // Fill in raytracing code here...  
 
-  std::cout << "Calling A4_Render(\n" <<
+  std::cout << "Calling RayTracer::render(\n" <<
 		  "\t" << *root <<
           "\t" << "Image(width:" << image.width() << ", height:" << image.height() << ")\n"
           "\t" << "eye:  " << glm::to_string(eye) << std::endl <<
