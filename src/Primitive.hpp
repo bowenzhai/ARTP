@@ -23,6 +23,12 @@ public:
   virtual bool beHitBy(glm::vec3 orig, glm::vec3 dir, float &t, glm::vec3 &N) const override;
 };
 
+class Cylinder : public Primitive {
+public:
+  virtual ~Cylinder();
+  virtual bool beHitBy(glm::vec3 orig, glm::vec3 dir, float &t, glm::vec3 &N) const override;
+};
+
 class NonhierSphere : public Primitive {
 public:
   NonhierSphere(const glm::vec3& pos, double radius)
@@ -46,7 +52,6 @@ public:
   
   virtual ~NonhierBox();
   virtual bool beHitBy(glm::vec3 orig, glm::vec3 dir, float &t, glm::vec3 &N) const override;
-
 
 private:
   glm::vec3 m_pos;

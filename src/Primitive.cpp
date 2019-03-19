@@ -69,6 +69,80 @@ bool Cube::beHitBy(glm::vec3 orig, glm::vec3 dir, float &t, glm::vec3 &N) const{
     }
 }
 
+Cylinder::~Cylinder()
+{
+}
+
+bool Cylinder::beHitBy(glm::vec3 orig, glm::vec3 dir, float &t, glm::vec3 &N) const {
+    mat4 inverse_transform = glm::inverse(curr_transform);
+    vec3 pointingAt = orig + dir;
+    vec3 orig_local = (vec3)(inverse_transform * (vec4(orig, 1.0f)));
+    pointingAt = (vec3)(inverse_transform * (vec4(pointingAt, 1.0f)));
+    vec3 dir_local = pointingAt - orig_local;
+    dir_local = glm::normalize(dir_local);
+    // calculate intersection with a "unit" cylinder with radius 1, length 1 and aligned with the y axis
+    bool intersect_unit_cylinder = true;
+    float t_local;
+    vec3 N_local;
+    {
+        vec3 m_pos = vec3(0, 0, 0);
+        float m_length = 1.0f;
+
+        double roots[2];
+
+        double a = pow(dir_local.x, 2) + pow(dir_local.z, 2);
+        double b = 2 * orig_local.x * dir_local.x + 2 * orig_local.z * dir_local.z;
+        double c = pow(orig_local.x, 2) + pow(orig_local.z, 2) - 1;
+
+        int num_roots = quadraticRoots(a, b, c, roots);
+        
+        if (num_roots == 0) {
+            intersect_unit_cylinder = false;
+        } else if (num_roots == 2) {
+            double t0 = roots[0];
+            double t1 = roots[1];
+
+            // test for each t, whether it passes the test
+            float y_1 = orig_local.y + t0 * dir_local.y;
+            float y_2 = orig_local.y + t1 * dir_local.y;
+
+            if ((y_1 <= (m_pos.y + m_length) && y_1 >= m_pos.y) &&
+                (y_2 <= (m_pos.y + m_length) && y_2 >= m_pos.y)) {
+                if (t0 > t1) std::swap(t0, t1); 
+        
+                if (t0 < 0) { 
+                    t0 = t1;
+                }
+
+                t_local = t0;
+            } else if (y_1 <= (m_pos.y + m_length) && y_1 >= m_pos.y) {
+                t_local = t0;
+            } else if (y_2 <= (m_pos.y + m_length) && y_2 >= m_pos.y) {
+                t_local = t1;
+            } else {
+                intersect_unit_cylinder = false;
+            }
+
+            if (t_local < 0) {
+                intersect_unit_cylinder = false;
+            }
+
+            vec3 p = orig_local + t_local * dir_local;
+            vec3 rel = m_pos + vec3(0, p.y, 0);
+            N_local = glm::normalize(p - rel);
+        }
+    }
+    if (intersect_unit_cylinder) {
+        vec3 p_local = orig_local + t_local * dir_local;
+        vec3 p = (vec3)(curr_transform * vec4(p_local, 1.0f));
+        t = glm::length(p - orig);
+        N = glm::normalize((vec3)(glm::transpose(inverse_transform) * vec4(N_local, 1.0f)));
+        return true;
+    } else {    
+        return false;
+    }
+}
+
 NonhierSphere::~NonhierSphere()
 {
 }

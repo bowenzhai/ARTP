@@ -111,11 +111,6 @@ void RayTracer::render() {
 	}
 	
 	for (int i = 0; i < num_workers; ++i) {
-		// cout << "progress: [";
-		
-		// cout << "];"
-		// << (float)completed / (float)(h * w) * 100 << "\%" << endl;
-
 		threads[i].join();
 	}
 }
