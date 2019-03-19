@@ -86,7 +86,7 @@ visor_3:translate(-0.4, 0.0, 0.35)
 visor_3:rotate('z', 90.0)
 visor_3:set_material(blue)
 head_joint:add_child(visor_3)
---[[
+
 -- leg joints
 left_leg_joint = gr.joint('left_leg_joint', {-45, 0, 45}, {-45, 0, 45})
 left_leg_joint:translate(0.5, -1.0, 0.0)
@@ -260,26 +260,26 @@ right_elbow_joint = gr.joint('right_elbow_joint', {-45, 0, 45}, {-45, 0, 45})
 right_elbow_joint:translate(-0.2, -2.5, 0.0)
 right_arm_joint:add_child(right_elbow_joint)
 
-right_arm_lower = gr.mesh('cube', 'right_arm_lower')
+right_arm_lower = gr.cube('right_arm_lower')
 right_arm_lower:set_material(grey)
 right_arm_lower:scale(0.7, 1.8, 0.7)
 right_elbow_joint:add_child(right_arm_lower)
 
-right_cannon_1 = gr.mesh('cube', 'right_cannon_1')
+right_cannon_1 = gr.cube('right_cannon_1')
 right_cannon_1:set_material(blue)
 right_cannon_1:scale(0.1, 1.0, 0.9)
 right_cannon_1:translate(0.2, -0.5, 0.0)
 right_elbow_joint:add_child(right_cannon_1)
 
-right_cannon_2 = gr.mesh('cube', 'right_cannon_2')
+right_cannon_2 = gr.cube('right_cannon_2')
 right_cannon_2:set_material(blue)
 right_cannon_2:scale(0.1, 1.2, 0.9)
 right_cannon_2:translate(-0.2, -0.4, 0.0)
 right_elbow_joint:add_child(right_cannon_2)
-]]
-white_light = gr.light({-100.0, 150.0, 400.0}, {0.9, 0.9, 0.9}, {1, 0, 0})
+
+white_light = gr.light({-220, 0, 400.0}, {0.9, 0.9, 0.9}, {1, 0, 0})
 magenta_light = gr.light({400.0, 100.0, 150.0}, {0.7, 0.0, 0.7}, {1, 0, 0})
 
 gr.render(rootnode, './Generated/darksamus.png', 512, 512,
-{0, 0, 5}, {0, 0, -1}, {0, 1, 0}, 50,
+{0, 0, 10}, {0, 0, -1}, {0, 1, 0}, 50,
 	  {0.3, 0.3, 0.3}, {white_light})

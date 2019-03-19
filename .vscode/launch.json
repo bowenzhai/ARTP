@@ -9,7 +9,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/src/RayTracer",
-            "args": ["1", "Assets/simple-hier.lua"],
+            "args": ["1", "Assets/darksamus.lua"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}/src",
             "environment": [],

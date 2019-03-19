@@ -20,6 +20,7 @@ public:
 class Cube : public Primitive {
 public:
   virtual ~Cube();
+  virtual bool beHitBy(glm::vec3 orig, glm::vec3 dir, float &t, glm::vec3 &N) override;
 };
 
 class NonhierSphere : public Primitive {

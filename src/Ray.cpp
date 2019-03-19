@@ -21,7 +21,7 @@ vec3 Ray::genBG() {
 
 const int Ray::MAX_HITS = 2;
 
-const float Ray::BIAS = 1e-2;
+const float Ray::BIAS = 1e-1;
 
 Ray Ray::ggReflection(const vec3 &p, const vec3 &dir, const vec3 &N, int x, int y) {
     vec3 new_dir = glm::normalize(dir - 2 * N * (glm::dot(dir, N)));

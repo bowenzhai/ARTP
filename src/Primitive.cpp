@@ -35,13 +35,10 @@ bool Sphere::beHitBy(glm::vec3 orig, glm::vec3 dir, float &t, glm::vec3 &N) {
     float t_local;
     vec3 N_local;
     if (nhs.beHitBy(orig_local, dir_local, t_local, N_local)) {
-        // vec3 p_local = orig_local + t_local * dir_local;
-        // vec3 p = (vec3)(curr_transform * vec4(p_local, 1.0f));
-        // t = (p - orig).length();
-        // N = glm::normalize(vec3(curr_transform * vec4(N_local, 1.0f)));
-        // N = glm::normalize((vec3)(glm::transpose(inverse_transform) * vec4(N_local, 1.0f)));
-        t = t_local;
-        N = N_local;
+        vec3 p_local = orig_local + t_local * dir_local;
+        vec3 p = (vec3)(curr_transform * vec4(p_local, 1.0f));
+        t = glm::length(p - orig);
+        N = glm::normalize((vec3)(glm::transpose(inverse_transform) * vec4(N_local, 1.0f)));
         return true;
     } else {    
         return false;
@@ -50,6 +47,28 @@ bool Sphere::beHitBy(glm::vec3 orig, glm::vec3 dir, float &t, glm::vec3 &N) {
 
 Cube::~Cube()
 {
+}
+
+bool Cube::beHitBy(glm::vec3 orig, glm::vec3 dir, float &t, glm::vec3 &N) {
+    mat4 inverse_transform = glm::inverse(curr_transform);
+    vec3 pointingAt = orig + dir;
+    vec3 orig_local = (vec3)(inverse_transform * (vec4(orig, 1.0f)));
+    pointingAt = (vec3)(inverse_transform * (vec4(pointingAt, 1.0f)));
+    vec3 dir_local = pointingAt - orig_local;
+    //vec3 dir_local = dir;
+    dir_local = glm::normalize(dir_local);
+    NonhierBox nhb(vec3(0.0f), 1.0f);
+    float t_local;
+    vec3 N_local;
+    if (nhb.beHitBy(orig_local, dir_local, t_local, N_local)) {
+        vec3 p_local = orig_local + t_local * dir_local;
+        vec3 p = (vec3)(curr_transform * vec4(p_local, 1.0f));
+        t = glm::length(p - orig);
+        N = glm::normalize((vec3)(glm::transpose(inverse_transform) * vec4(N_local, 1.0f)));
+        return true;
+    } else {    
+        return false;
+    }
 }
 
 NonhierSphere::~NonhierSphere()
@@ -145,14 +164,17 @@ bool NonhierBox::beHitBy(glm::vec3 orig, glm::vec3 dir, float &t, glm::vec3 &N) 
     t = t_min;
 
     // normal calculation
+    float bias = 1.00001f;
 
     vec3 min = bounds[0];
     vec3 max = bounds[1];
 
     vec3 center = vec3((min.x + max.x) / 2, (min.y + max.y) / 2, (min.z + max.z) / 2);
     vec3 hit = orig + t * dir;
-    vec3 divisor = vec3(abs(min.x + max.x) / 2, abs(min.y + max.y) / 2, abs(min.z + max.z) / 2);
-    N = vec3((int)(center.x / divisor.x), (int)(center.y / divisor.y), (int)(center.y / divisor.y));
+    vec3 p = hit - center;
+    vec3 divisor = vec3(abs(min.x - max.x) / 2, abs(min.y - max.y) / 2, abs(min.z - max.z) / 2);
+    N = vec3((int)(p.x / divisor.x * bias), (int)(p.y / divisor.y * bias), (int)(p.z / divisor.z * bias));
+    N = glm::normalize(N);
 
     return true;
 }
