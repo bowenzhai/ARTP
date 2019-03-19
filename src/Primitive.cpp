@@ -15,7 +15,7 @@ Primitive::~Primitive()
 {
 }
 
-bool Primitive::beHitBy(glm::vec3 orig, glm::vec3 dir, float &t, vec3 &N) {
+bool Primitive::beHitBy(glm::vec3 orig, glm::vec3 dir, float &t, vec3 &N) const{
     return false;
 }
 
@@ -23,13 +23,12 @@ Sphere::~Sphere()
 {
 }
 
-bool Sphere::beHitBy(glm::vec3 orig, glm::vec3 dir, float &t, glm::vec3 &N) {
+bool Sphere::beHitBy(glm::vec3 orig, glm::vec3 dir, float &t, glm::vec3 &N) const{
     mat4 inverse_transform = glm::inverse(curr_transform);
     vec3 pointingAt = orig + dir;
     vec3 orig_local = (vec3)(inverse_transform * (vec4(orig, 1.0f)));
     pointingAt = (vec3)(inverse_transform * (vec4(pointingAt, 1.0f)));
     vec3 dir_local = pointingAt - orig_local;
-    //vec3 dir_local = dir;
     dir_local = glm::normalize(dir_local);
     NonhierSphere nhs(vec3(0.0f), 1.0f);
     float t_local;
@@ -49,13 +48,12 @@ Cube::~Cube()
 {
 }
 
-bool Cube::beHitBy(glm::vec3 orig, glm::vec3 dir, float &t, glm::vec3 &N) {
+bool Cube::beHitBy(glm::vec3 orig, glm::vec3 dir, float &t, glm::vec3 &N) const{
     mat4 inverse_transform = glm::inverse(curr_transform);
     vec3 pointingAt = orig + dir;
     vec3 orig_local = (vec3)(inverse_transform * (vec4(orig, 1.0f)));
     pointingAt = (vec3)(inverse_transform * (vec4(pointingAt, 1.0f)));
     vec3 dir_local = pointingAt - orig_local;
-    //vec3 dir_local = dir;
     dir_local = glm::normalize(dir_local);
     NonhierBox nhb(vec3(0.0f), 1.0f);
     float t_local;
@@ -75,7 +73,7 @@ NonhierSphere::~NonhierSphere()
 {
 }
 
-bool NonhierSphere::beHitBy(glm::vec3 orig, glm::vec3 dir, float &t, vec3 &N) {
+bool NonhierSphere::beHitBy(glm::vec3 orig, glm::vec3 dir, float &t, vec3 &N) const{
     //cout << "hit test" << endl;
     double roots[2];
     vec3 a_minus_c = orig - m_pos;
@@ -115,7 +113,7 @@ NonhierBox::~NonhierBox()
 {
 }
 
-bool NonhierBox::beHitBy(glm::vec3 orig, glm::vec3 dir, float &t, glm::vec3 &N) {
+bool NonhierBox::beHitBy(glm::vec3 orig, glm::vec3 dir, float &t, glm::vec3 &N) const{
     vec3 bounds[2];
     bounds[0] = m_pos;
     bounds[1] = vec3(m_pos.x + m_size, m_pos.y + m_size, m_pos.z + m_size);

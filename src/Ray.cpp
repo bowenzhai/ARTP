@@ -66,7 +66,7 @@ vec3 Ray::getColor(SceneNode * root, list<Light *> lights, vec3 & ambient, int m
         p = pointAt(t);
         
         for (auto light : lights) {
-            // shadow
+            //shadow
             Ray reverse_light = Ray(p + N * BIAS, glm::normalize(light->position - p), x, y);
             vec3 N_reverse;
             float t_reverse;

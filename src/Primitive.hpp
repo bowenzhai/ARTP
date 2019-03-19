@@ -7,20 +7,20 @@
 class Primitive {
 public:
   virtual ~Primitive();
-  virtual bool beHitBy(glm::vec3 orig, glm::vec3 dir, float &t, glm::vec3 &N);
+  virtual bool beHitBy(glm::vec3 orig, glm::vec3 dir, float &t, glm::vec3 &N) const;
   glm::mat4 curr_transform;
 };
 
 class Sphere : public Primitive {
 public:
   virtual ~Sphere();
-  virtual bool beHitBy(glm::vec3 orig, glm::vec3 dir, float &t, glm::vec3 &N) override;
+  virtual bool beHitBy(glm::vec3 orig, glm::vec3 dir, float &t, glm::vec3 &N) const override;
 };
 
 class Cube : public Primitive {
 public:
   virtual ~Cube();
-  virtual bool beHitBy(glm::vec3 orig, glm::vec3 dir, float &t, glm::vec3 &N) override;
+  virtual bool beHitBy(glm::vec3 orig, glm::vec3 dir, float &t, glm::vec3 &N) const override;
 };
 
 class NonhierSphere : public Primitive {
@@ -30,7 +30,7 @@ public:
   {
   }
   virtual ~NonhierSphere();
-  virtual bool beHitBy(glm::vec3 orig, glm::vec3 dir, float &t, glm::vec3 &N) override;
+  virtual bool beHitBy(glm::vec3 orig, glm::vec3 dir, float &t, glm::vec3 &N) const override;
 
 private:
   glm::vec3 m_pos;
@@ -45,7 +45,7 @@ public:
   }
   
   virtual ~NonhierBox();
-  virtual bool beHitBy(glm::vec3 orig, glm::vec3 dir, float &t, glm::vec3 &N) override;
+  virtual bool beHitBy(glm::vec3 orig, glm::vec3 dir, float &t, glm::vec3 &N) const override;
 
 
 private:

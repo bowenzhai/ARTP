@@ -9,7 +9,7 @@ using namespace std;
 
 using namespace glm;
 
-void RayTracer::flattenScene(SceneNode * node) {
+SceneNode *RayTracer::flattenScene(SceneNode * new_root, SceneNode * node) {
 	mat4 new_matrix(matrix_stack.top());
 	//new_matrix = node->trans * new_matrix;
 	new_matrix = new_matrix * node->trans;	
@@ -26,19 +26,18 @@ void RayTracer::flattenScene(SceneNode * node) {
 	if (node->m_nodeType == NodeType::GeometryNode) {
 		GeometryNode *geometryNode = static_cast<GeometryNode *>(node);
         geometryNode->m_primitive->curr_transform = new_matrix;
-		root_flattened->add_child(geometryNode);
+		new_root->add_child(geometryNode);
 	}
 
 	for (auto child : node->children) {
-        flattenScene(child);
+        flattenScene(new_root, child);
 	}
 
 	matrix_stack.pop();
 
 	// done flattening, replace root
 	if (node->m_name == "root") {
-		delete root;
-		root = root_flattened;
+		return new_root;
 	}
 }
 
@@ -101,7 +100,8 @@ void RayTracer::render() {
 	root_flattened->m_name = root->m_name;
 	root_flattened->trans = root->trans;
 	root_flattened->invtrans = root->invtrans;
-	flattenScene(root);
+
+	root = flattenScene(root_flattened, root);
 
 	RayTracerWorker *workers[num_workers];
 	thread threads[num_workers];

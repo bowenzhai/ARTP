@@ -44,7 +44,7 @@ public:
             std::list<Light *> & lights,
             int num_workers): root(root), image(image), eye(eye), view(view), up(up), fovy(fovy), ambient(ambient), lights(lights), num_workers(num_workers) {}
 
-    void flattenScene(SceneNode * root);
+    SceneNode *flattenScene(SceneNode * new_root, SceneNode * root);
 
     void transformToWorld(glm::vec3 &coords);
 
