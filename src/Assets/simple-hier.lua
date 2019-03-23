@@ -23,6 +23,8 @@ scene_root:add_child(n1)
 s2 = gr.sphere('s2')
 n1:add_child(s2)
 s2:set_material(mat2)
+s2:scale(2, 1, 1)
+s2:rotate('z', 45.0)
 
 n2 = gr.node('n2')
 n2:translate(-5, -1, 0)
@@ -33,13 +35,22 @@ n2:add_child(b2)
 b2:set_material(mat3)
 b2:scale(2, 1, 2)
 
-s3 = gr.nh_sphere('s3', {3.5, -0.5, 1}, 1)
+s3 = gr.nh_sphere('s3', {2.5, -1, 3}, 1)
 scene_root:add_child(s3)
 s3:set_material(mat3)
 
 c1 = gr.cylinder('c1')
 scene_root:add_child(c1)
-c1:set_material(mat3)
+c1:set_material(mat1)
+c1:scale(1, 3, 1)
+c1:translate(-1, -2, 0)
+--c1:rotate('z', 45.0)
+
+t1 = gr.torus('t1')
+scene_root:add_child(t1)
+t1:set_material(mat1)
+t1:translate(0, -1.5, 3)
+
 
 white_light = gr.light({-100.0, 150.0, 400.0}, {0.9, 0.9, 0.9}, {1, 0, 0})
 magenta_light = gr.light({400.0, 100.0, 150.0}, {0.7, 0.0, 0.7}, {1, 0, 0})

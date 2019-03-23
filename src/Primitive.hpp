@@ -8,6 +8,7 @@ class Primitive {
 public:
   virtual ~Primitive();
   virtual bool beHitBy(glm::vec3 orig, glm::vec3 dir, float &t, glm::vec3 &N) const;
+  void transformRayToLocal(glm::vec3 &orig, glm::vec3 &dir) const;
   glm::mat4 curr_transform;
 };
 
@@ -26,6 +27,12 @@ public:
 class Cylinder : public Primitive {
 public:
   virtual ~Cylinder();
+  virtual bool beHitBy(glm::vec3 orig, glm::vec3 dir, float &t, glm::vec3 &N) const override;
+};
+
+class Torus : public Primitive {
+public:
+  virtual ~Torus();
   virtual bool beHitBy(glm::vec3 orig, glm::vec3 dir, float &t, glm::vec3 &N) const override;
 };
 

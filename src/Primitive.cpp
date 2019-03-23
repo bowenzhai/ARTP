@@ -3,6 +3,7 @@
 #include <utility>
 #include <iostream>
 #include <glm/ext.hpp>
+#include <list>
 
 #include "Primitive.hpp"
 #include "polyroots.hpp"
@@ -19,17 +20,23 @@ bool Primitive::beHitBy(glm::vec3 orig, glm::vec3 dir, float &t, vec3 &N) const{
     return false;
 }
 
+void Primitive::transformRayToLocal(glm::vec3 &orig, glm::vec3 &dir) const{
+    mat4 inverse_transform = glm::inverse(curr_transform);
+    vec3 pointingAt = orig + dir;
+    orig = (vec3)(inverse_transform * (vec4(orig, 1.0f)));
+    pointingAt = (vec3)(inverse_transform * (vec4(pointingAt, 1.0f)));
+    vec3 dir_local = pointingAt - orig;
+    dir = glm::normalize(dir_local);
+}
+
 Sphere::~Sphere()
 {
 }
 
 bool Sphere::beHitBy(glm::vec3 orig, glm::vec3 dir, float &t, glm::vec3 &N) const{
-    mat4 inverse_transform = glm::inverse(curr_transform);
-    vec3 pointingAt = orig + dir;
-    vec3 orig_local = (vec3)(inverse_transform * (vec4(orig, 1.0f)));
-    pointingAt = (vec3)(inverse_transform * (vec4(pointingAt, 1.0f)));
-    vec3 dir_local = pointingAt - orig_local;
-    dir_local = glm::normalize(dir_local);
+    vec3 orig_local = orig;
+    vec3 dir_local = dir;
+    transformRayToLocal(orig_local, dir_local);
     NonhierSphere nhs(vec3(0.0f), 1.0f);
     float t_local;
     vec3 N_local;
@@ -37,7 +44,7 @@ bool Sphere::beHitBy(glm::vec3 orig, glm::vec3 dir, float &t, glm::vec3 &N) cons
         vec3 p_local = orig_local + t_local * dir_local;
         vec3 p = (vec3)(curr_transform * vec4(p_local, 1.0f));
         t = glm::length(p - orig);
-        N = glm::normalize((vec3)(glm::transpose(inverse_transform) * vec4(N_local, 1.0f)));
+        N = glm::normalize((vec3)(glm::transpose(glm::inverse(curr_transform)) * vec4(N_local, 1.0f)));
         return true;
     } else {    
         return false;
@@ -49,12 +56,9 @@ Cube::~Cube()
 }
 
 bool Cube::beHitBy(glm::vec3 orig, glm::vec3 dir, float &t, glm::vec3 &N) const{
-    mat4 inverse_transform = glm::inverse(curr_transform);
-    vec3 pointingAt = orig + dir;
-    vec3 orig_local = (vec3)(inverse_transform * (vec4(orig, 1.0f)));
-    pointingAt = (vec3)(inverse_transform * (vec4(pointingAt, 1.0f)));
-    vec3 dir_local = pointingAt - orig_local;
-    dir_local = glm::normalize(dir_local);
+    vec3 orig_local = orig;
+    vec3 dir_local = dir;
+    transformRayToLocal(orig_local, dir_local);
     NonhierBox nhb(vec3(0.0f), 1.0f);
     float t_local;
     vec3 N_local;
@@ -62,7 +66,7 @@ bool Cube::beHitBy(glm::vec3 orig, glm::vec3 dir, float &t, glm::vec3 &N) const{
         vec3 p_local = orig_local + t_local * dir_local;
         vec3 p = (vec3)(curr_transform * vec4(p_local, 1.0f));
         t = glm::length(p - orig);
-        N = glm::normalize((vec3)(glm::transpose(inverse_transform) * vec4(N_local, 1.0f)));
+        N = glm::normalize((vec3)(glm::transpose(glm::inverse(curr_transform)) * vec4(N_local, 1.0f)));
         return true;
     } else {    
         return false;
@@ -74,15 +78,13 @@ Cylinder::~Cylinder()
 }
 
 bool Cylinder::beHitBy(glm::vec3 orig, glm::vec3 dir, float &t, glm::vec3 &N) const {
-    mat4 inverse_transform = glm::inverse(curr_transform);
-    vec3 pointingAt = orig + dir;
-    vec3 orig_local = (vec3)(inverse_transform * (vec4(orig, 1.0f)));
-    pointingAt = (vec3)(inverse_transform * (vec4(pointingAt, 1.0f)));
-    vec3 dir_local = pointingAt - orig_local;
-    dir_local = glm::normalize(dir_local);
+    vec3 orig_local = orig;
+    vec3 dir_local = dir;
+    transformRayToLocal(orig_local, dir_local);
     // calculate intersection with a "unit" cylinder with radius 1, length 1 and aligned with the y axis
     bool intersect_unit_cylinder = true;
     float t_local;
+    vec3 p_local;
     vec3 N_local;
     {
         vec3 m_pos = vec3(0, 0, 0);
@@ -127,16 +129,93 @@ bool Cylinder::beHitBy(glm::vec3 orig, glm::vec3 dir, float &t, glm::vec3 &N) co
                 intersect_unit_cylinder = false;
             }
 
-            vec3 p = orig_local + t_local * dir_local;
-            vec3 rel = m_pos + vec3(0, p.y, 0);
-            N_local = glm::normalize(p - rel);
+            p_local = orig_local + t_local * dir_local;
+            vec3 rel = m_pos + vec3(0, p_local.y, 0);
+            N_local = glm::normalize(p_local - rel);
         }
     }
     if (intersect_unit_cylinder) {
-        vec3 p_local = orig_local + t_local * dir_local;
         vec3 p = (vec3)(curr_transform * vec4(p_local, 1.0f));
         t = glm::length(p - orig);
-        N = glm::normalize((vec3)(glm::transpose(inverse_transform) * vec4(N_local, 1.0f)));
+        N = glm::normalize((vec3)(glm::transpose(glm::inverse(curr_transform)) * vec4(N_local, 1.0f)));
+        return true;
+    } else {    
+        return false;
+    }
+}
+
+Torus::~Torus()
+{
+}
+
+bool Torus::beHitBy(glm::vec3 orig, glm::vec3 dir, float &t, glm::vec3 &N) const {
+    vec3 orig_local = orig;
+    vec3 dir_local = dir;
+    transformRayToLocal(orig_local, dir_local);
+    // calculate intersection with a "unit" torus with radius 1, thickness radius 0.5 and positioned at the origin
+    bool intersect_unit_torus = true;
+    float t_local;
+    vec3 p_local;
+    vec3 N_local;
+    {
+        vec3 m_pos = vec3(0, 0, 0);
+        float m_radius = 1.0f;
+        float m_thickness = 0.5f; // the radius of the outer circle
+        
+        double coefficients[5];
+        double roots[4];
+
+        //https://marcin-chwedczuk.github.io/ray-tracing-torus
+        float d_squared = glm::dot(dir_local, dir_local);
+        float o_squared = glm::dot(orig_local, orig_local);
+        float o_dot_d = glm::dot(orig_local, dir_local);
+        float r_squared = pow(m_thickness, 2);
+        float R_squared = pow(m_radius, 2);
+
+        coefficients[4] = pow(d_squared, 2);
+        coefficients[3] = 4 * d_squared * o_dot_d;
+        coefficients[2] = 2 * d_squared * (o_squared - (r_squared + R_squared)) + 
+                            4 * pow(o_dot_d, 2) + 4 * R_squared * pow(dir_local.y, 2);
+        coefficients[1] = 4 * (o_squared - (r_squared + R_squared)) * o_dot_d + 8 * R_squared * orig_local.y * dir_local.y;
+        coefficients[0] = pow((o_squared - (r_squared + R_squared)), 2) - 4 * R_squared * (r_squared - pow(orig_local.y, 2));
+
+        double coefficients_normal[4];
+        coefficients_normal[0] = coefficients[3] / coefficients[4];
+        coefficients_normal[1] = coefficients[2] / coefficients[4];
+        coefficients_normal[2] = coefficients[1] / coefficients[4];
+        coefficients_normal[3] = coefficients[0] / coefficients[4];
+
+        int num_roots = quarticRoots(coefficients_normal[0], coefficients_normal[1], coefficients_normal[2], coefficients_normal[3], roots);
+
+        if (num_roots <= 1) {
+            intersect_unit_torus = false;
+        } else {
+            list<double> roots_sort;
+            for (int i = 0; i < 4; ++i) {
+                if (roots[i] > 0.01f) {
+                    roots_sort.emplace_back(roots[i]);
+                }
+            }
+            roots_sort.sort();
+            if (roots_sort.size() == 0 ) {
+                intersect_unit_torus = false;
+            }
+            float t_local = roots_sort.front();
+            p_local = orig_local + t_local * dir_local;
+
+            // closest point on the circle
+            // https://www.geometrictools.com/Documentation/DistanceToCircle3.pdf
+            vec3 up = vec3(0, 1, 0);
+            vec3 delta = p_local - m_pos;
+            vec3 k = m_pos + m_radius * glm::normalize(delta - glm::dot(up, delta) * up);
+
+            N_local = glm::normalize(p_local - k);
+        }
+    }
+    if (intersect_unit_torus) {
+        vec3 p = (vec3)(curr_transform * vec4(p_local, 1.0f));
+        t = glm::length(p - orig);
+        N = glm::normalize((vec3)(glm::transpose(glm::inverse(curr_transform)) * vec4(N_local, 1.0f)));
         return true;
     } else {    
         return false;
@@ -148,23 +227,18 @@ NonhierSphere::~NonhierSphere()
 }
 
 bool NonhierSphere::beHitBy(glm::vec3 orig, glm::vec3 dir, float &t, vec3 &N) const{
-    //cout << "hit test" << endl;
     double roots[2];
     vec3 a_minus_c = orig - m_pos;
-    //cout << "orig: " << glm::to_string(orig) << " dir: " << glm::to_string(dir) << endl;
 
     double a = glm::dot(dir, dir);
     double b = 2.0f * glm::dot(dir, a_minus_c);
     double c = glm::dot(a_minus_c, a_minus_c) - (m_radius * m_radius);
-
-    //cout << "a: " << a << " b: " << b << " c: " << c << endl;
 
     int num_roots = quadraticRoots(a, b, c, roots);
     
     if (num_roots == 0) {
         return false;
     } else if (num_roots == 2) {
-        //cout << "num roots " << num_roots << endl;
         double t0 = roots[0];
         double t1 = roots[1];
 
@@ -179,7 +253,6 @@ bool NonhierSphere::beHitBy(glm::vec3 orig, glm::vec3 dir, float &t, vec3 &N) co
         N = glm::normalize((orig + t * dir) - m_pos);
     }
 
-    //cout << "hit, t = " << t << endl;
     return true;
 }
 
