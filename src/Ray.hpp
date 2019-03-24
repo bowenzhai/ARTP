@@ -10,6 +10,7 @@
 #include "Light.hpp"
 #include "Material.hpp"
 #include "PhongMaterial.hpp"
+#include "ReflectiveMaterial.hpp"
 
 class Ray {
 public:

@@ -391,9 +391,9 @@ int gr_render_cmd(lua_State* L)
 	return 0;
 }
 
-// Create a Material
+// Create a Phong Material
 extern "C"
-int gr_material_cmd(lua_State* L)
+int gr_phong_material_cmd(lua_State* L)
 {
   GRLUA_DEBUG_CALL;
   
@@ -409,6 +409,28 @@ int gr_material_cmd(lua_State* L)
   data->material = new PhongMaterial(glm::vec3(kd[0], kd[1], kd[2]),
                                      glm::vec3(ks[0], ks[1], ks[2]),
                                      shininess);
+
+  luaL_newmetatable(L, "gr.material");
+  lua_setmetatable(L, -2);
+  
+  return 1;
+}
+
+// Create a Reflective Material
+extern "C"
+int gr_reflective_material_cmd(lua_State* L)
+{
+  GRLUA_DEBUG_CALL;
+  
+  gr_material_ud* data = (gr_material_ud*)lua_newuserdata(L, sizeof(gr_material_ud));
+  data->material = 0;
+  
+  double kd[3];
+  get_tuple(L, 1, kd, 3);
+
+  double reflectiveness = luaL_checknumber(L, 2);
+  
+  data->material = new ReflectiveMaterial(glm::vec3(kd[0], kd[1], kd[2]), reflectiveness);
 
   luaL_newmetatable(L, "gr.material");
   lua_setmetatable(L, -2);
@@ -558,8 +580,8 @@ static const luaL_Reg grlib_functions[] = {
   {"node", gr_node_cmd},
   {"sphere", gr_sphere_cmd},
   {"joint", gr_joint_cmd},
-  {"material", gr_material_cmd},
-  // New for assignment 4
+  {"phong_material", gr_phong_material_cmd},
+  {"reflective_material", gr_reflective_material_cmd},
   {"cube", gr_cube_cmd},
   {"cylinder", gr_cylinder_cmd},
   {"torus", gr_torus_cmd},

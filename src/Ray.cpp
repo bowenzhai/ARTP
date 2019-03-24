@@ -19,9 +19,9 @@ vec3 Ray::genBG() {
 	return color;
 }
 
-const int Ray::MAX_HITS = 2;
+const int Ray::MAX_HITS = 4;
 
-const float Ray::BIAS = 1e-1;
+const float Ray::BIAS = 1e-2;
 
 Ray Ray::ggReflection(const vec3 &p, const vec3 &dir, const vec3 &N, int x, int y) {
     vec3 new_dir = glm::normalize(dir - 2 * N * (glm::dot(dir, N)));
@@ -59,9 +59,19 @@ vec3 Ray::getColor(SceneNode * root, list<Light *> lights, vec3 & ambient, int m
 	float t;
     GeometryNode *hit_object = hit(root, t, N);
     if (hit_object != nullptr) {
-        PhongMaterial *phongMaterial = static_cast<PhongMaterial *>(hit_object->m_material);
-        kd = phongMaterial->m_kd;
-        ks = phongMaterial->m_ks;
+        MaterialType type = hit_object->m_material->m_materialType;
+        PhongMaterial *phongMaterial;
+        ReflectiveMaterial *reflectiveMaterial;
+
+        if (type == MaterialType::PhongMaterial) {
+            phongMaterial = static_cast<PhongMaterial *>(hit_object->m_material);
+            kd = phongMaterial->m_kd;
+            ks = phongMaterial->m_ks;
+        } else if (type == MaterialType::ReflectiveMaterial) {
+            reflectiveMaterial = static_cast<ReflectiveMaterial *>(hit_object->m_material);
+            kd = reflectiveMaterial->m_kd;
+        }
+        
         color = kd * ambient;
         p = pointAt(t);
         
@@ -70,24 +80,38 @@ vec3 Ray::getColor(SceneNode * root, list<Light *> lights, vec3 & ambient, int m
             Ray reverse_light = Ray(p + N * BIAS, glm::normalize(light->position - p), x, y);
             vec3 N_reverse;
             float t_reverse;
+            vec3 color_intermediate;
             if (reverse_light.hit(root, t_reverse, N_reverse) != nullptr) {
+                // // reflective
+                // if (type == MaterialType::ReflectiveMaterial && maxHits < MAX_HITS) {
+                //     Ray view_reflected = ggReflection(p  + N * BIAS, dir, N, x, y);
+                //     color_intermediate += reflectiveMaterial->m_reflectiveness * view_reflected.getColor(root, lights, ambient, maxHits + 1);
+                // } else {
+                //     continue;
+                // }
                 continue;
             }
 
-            vec3 color_intermediate;
             vec3 light_dir = light->position - p;
             light_dir = glm::normalize(light_dir);
-            Ray reflected = ggReflection(p, light_dir, N, x, y);
-            if (kd.length() != 0) {
-                color_intermediate += kd * light->directLight(p, N);
+            // diffuse
+            color_intermediate += kd * light->directLight(p, N);
+
+            // specular
+            if (type == MaterialType::PhongMaterial) {
+                Ray light_reflected = ggReflection(p, light_dir, N, x, y);
+                color_intermediate += ks * light->specularLight(dir, light_reflected.dir, phongMaterial->m_shininess);
             }
-            if (ks.length() != 0 && maxHits < MAX_HITS) {
-                //color_intermediate += ks * reflected.getColor(root, lights, ambient, maxHits + 1);
-                color_intermediate += ks * light->specularLight(dir, reflected.dir, phongMaterial->m_shininess);
+
+            // reflective
+            if (type == MaterialType::ReflectiveMaterial && maxHits < MAX_HITS) {
+                Ray view_reflected = ggReflection(p  + N * BIAS, dir, N, x, y);
+                color_intermediate += reflectiveMaterial->m_reflectiveness * view_reflected.getColor(root, lights, ambient, maxHits + 1);
             }
+
             color_intermediate /= light->falloff[0] + light->falloff[1] + light->falloff[2];
             color += color_intermediate;
-        }
+        } 
     } else {
         color = genBG();
     }

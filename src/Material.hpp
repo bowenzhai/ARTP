@@ -2,9 +2,15 @@
 
 #pragma once
 
+enum class MaterialType {
+	PhongMaterial,
+	ReflectiveMaterial
+};
+
 class Material {
 public:
   virtual ~Material();
+  MaterialType m_materialType;
 
 protected:
   Material();
