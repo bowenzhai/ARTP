@@ -429,8 +429,32 @@ int gr_reflective_material_cmd(lua_State* L)
   get_tuple(L, 1, kd, 3);
 
   double reflectiveness = luaL_checknumber(L, 2);
+  double glossiness= luaL_checknumber(L, 3);
   
-  data->material = new ReflectiveMaterial(glm::vec3(kd[0], kd[1], kd[2]), reflectiveness);
+  data->material = new ReflectiveMaterial(glm::vec3(kd[0], kd[1], kd[2]), reflectiveness, glossiness);
+
+  luaL_newmetatable(L, "gr.material");
+  lua_setmetatable(L, -2);
+  
+  return 1;
+}
+
+// Create a Refrative Material
+extern "C"
+int gr_refractive_material_cmd(lua_State* L)
+{
+  GRLUA_DEBUG_CALL;
+  
+  gr_material_ud* data = (gr_material_ud*)lua_newuserdata(L, sizeof(gr_material_ud));
+  data->material = 0;
+  
+  double kd[3];
+  get_tuple(L, 1, kd, 3);
+
+  double ior = luaL_checknumber(L, 2);
+  double glossiness= luaL_checknumber(L, 3);
+  
+  data->material = new RefractiveMaterial(glm::vec3(kd[0], kd[1], kd[2]), ior, glossiness);
 
   luaL_newmetatable(L, "gr.material");
   lua_setmetatable(L, -2);
@@ -582,6 +606,7 @@ static const luaL_Reg grlib_functions[] = {
   {"joint", gr_joint_cmd},
   {"phong_material", gr_phong_material_cmd},
   {"reflective_material", gr_reflective_material_cmd},
+  {"refractive_material", gr_refractive_material_cmd},
   {"cube", gr_cube_cmd},
   {"cylinder", gr_cylinder_cmd},
   {"torus", gr_torus_cmd},

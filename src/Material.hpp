@@ -4,7 +4,8 @@
 
 enum class MaterialType {
 	PhongMaterial,
-	ReflectiveMaterial
+	ReflectiveMaterial,
+  RefractiveMaterial
 };
 
 class Material {

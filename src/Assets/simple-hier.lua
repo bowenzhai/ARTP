@@ -5,10 +5,15 @@ mat2 = gr.phong_material({0.5, 0.5, 0.5}, {0.5, 0.7, 0.5}, 25)
 mat3 = gr.phong_material({1.0, 0.6, 0.1}, {0.5, 0.7, 0.5}, 25)
 mat4 = gr.phong_material({0.9, 0.4, 0.6}, {0.5, 0.7, 0.5}, 25)
 
-mat1_r = gr.reflective_material({0.7, 1.0, 0.7}, 0.3)
-mat2_r = gr.reflective_material({0.5, 0.5, 0.5}, 0.3)
-mat3_r = gr.reflective_material({1.0, 0.6, 0.1}, 0.3)
-mat4_r = gr.reflective_material({0.9, 0.4, 0.6}, 0.3)
+mat1_r = gr.reflective_material({0.7, 1.0, 0.7}, 0.3, 0)
+mat2_r = gr.reflective_material({0.5, 0.5, 0.5}, 0.3, 0)
+mat3_r = gr.reflective_material({1.0, 0.6, 0.1}, 0.3, 0)
+mat4_r = gr.reflective_material({0.9, 0.4, 0.6}, 0.3, 0)
+
+mat1_ra = gr.refractive_material({0.7, 1.0, 0.7}, 1.3, 0)
+mat2_ra = gr.refractive_material({0.5, 0.5, 0.5}, 1.3, 0)
+mat3_ra = gr.refractive_material({1.0, 0.6, 0.1}, 1.3, 0)
+mat4_ra = gr.refractive_material({0.9, 0.4, 0.6}, 1.3, 0)
 
 scene_root = gr.node('root')
 
@@ -57,6 +62,11 @@ scene_root:add_child(t1)
 t1:set_material(mat4_r)
 t1:translate(0, -1.6, 3)
 
+s4 = gr.sphere('s4')
+s4:scale(2, 2, 2)
+s4:translate(0, 0, 5)
+scene_root:add_child(s4)
+s4:set_material(mat3_ra)
 
 white_light = gr.light({-3, 3, 7}, {0.9, 0.9, 0.9}, {1, 0, 0})
 magenta_light = gr.light({400.0, 100.0, 150.0}, {0.7, 0.0, 0.7}, {1, 0, 0})
