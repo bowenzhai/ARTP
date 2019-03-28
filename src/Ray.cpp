@@ -31,7 +31,7 @@ Ray Ray::ggReflection(const vec3 &p, const vec3 &dir, const vec3 &N, int x, int 
 Ray *Ray::ggRefract(const vec3 &p, const vec3 &dir, const vec3 &N, float ior, int x, int y) {
     vec3 N_temp = N;
     float v_dot_N = glm::dot(dir, N);
-    float n_i = 1;
+    float n_i = 1.0f;
     float n_T = ior;
     if (v_dot_N < 0) {
         // outside the surface
@@ -85,6 +85,7 @@ GeometryNode *Ray::hit(SceneNode * root, float &t, vec3 &N)  {
                 t = t_min;
                 N = N_curr;
             }
+            cout << "";
         }
     }
 
@@ -99,7 +100,14 @@ vec3 Ray::getColor(SceneNode * root, list<Light *> lights, vec3 & ambient, int m
 	vec3 N;
 	vec3 p;
 	float t;
+    // debug a pixel
+    // if (x == 10 && y == 6) {
+    //     cout << "for debug" << endl;
+    // }
     GeometryNode *hit_object = hit(root, t, N);
+    // if (x == 10 && y == 6) {
+    //     cout << glm::to_string(N) << endl;
+    // }
     if (hit_object != nullptr) {
         MaterialType type = hit_object->m_material->m_materialType;
         PhongMaterial *phongMaterial;
@@ -127,7 +135,7 @@ vec3 Ray::getColor(SceneNode * root, list<Light *> lights, vec3 & ambient, int m
             vec3 N_reverse;
             float t_reverse;
             vec3 color_intermediate;
-            if (reverse_light.hit(root, t_reverse, N_reverse) != nullptr) {
+            if (reverse_light.hit(root, t_reverse, N_reverse) != nullptr && t_reverse < glm::length(light->position - p)) {
                 // // reflective
                 // if (type == MaterialType::ReflectiveMaterial && maxHits < MAX_HITS) {
                 //     Ray view_reflected = ggReflection(p  + N * BIAS, dir, N, x, y);
@@ -135,7 +143,7 @@ vec3 Ray::getColor(SceneNode * root, list<Light *> lights, vec3 & ambient, int m
                 // } else {
                 //     continue;
                 // }
-                //continue;
+                continue;
             }
 
             vec3 light_dir = light->position - p;
@@ -183,6 +191,10 @@ vec3 Ray::getColor(SceneNode * root, list<Light *> lights, vec3 & ambient, int m
     } else {
         color = genBG();
     }
+
+    // if (x == 10 && y == 6) {
+    //     cout << glm::to_string(color) << endl;
+    // }
 
     return color;
 }

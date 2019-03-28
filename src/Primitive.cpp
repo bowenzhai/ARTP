@@ -160,7 +160,7 @@ bool Torus::beHitBy(glm::vec3 orig, glm::vec3 dir, float &t, glm::vec3 &N) const
     {
         vec3 m_pos = vec3(0, 0, 0);
         float m_radius = 1.0f;
-        float m_thickness = 0.5f; // the radius of the outer circle
+        float m_thickness_local = m_thickness * m_radius; // the radius of the outer circle
         
         double coefficients[5];
         double roots[4];
@@ -169,7 +169,7 @@ bool Torus::beHitBy(glm::vec3 orig, glm::vec3 dir, float &t, glm::vec3 &N) const
         float d_squared = glm::dot(dir_local, dir_local);
         float o_squared = glm::dot(orig_local, orig_local);
         float o_dot_d = glm::dot(orig_local, dir_local);
-        float r_squared = pow(m_thickness, 2);
+        float r_squared = pow(m_thickness_local, 2);
         float R_squared = pow(m_radius, 2);
 
         coefficients[4] = pow(d_squared, 2);
@@ -309,7 +309,7 @@ bool NonhierBox::beHitBy(glm::vec3 orig, glm::vec3 dir, float &t, glm::vec3 &N) 
     t = t_min;
 
     // normal calculation
-    float bias = 1.00001f;
+    float bias = 1.0001f;
 
     vec3 min = bounds[0];
     vec3 max = bounds[1];

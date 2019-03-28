@@ -32,8 +32,12 @@ public:
 
 class Torus : public Primitive {
 public:
+  Torus(const float thickness): m_thickness(thickness) {}
   virtual ~Torus();
   virtual bool beHitBy(glm::vec3 orig, glm::vec3 dir, float &t, glm::vec3 &N) const override;
+
+private:
+  float m_thickness;
 };
 
 class NonhierSphere : public Primitive {
