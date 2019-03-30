@@ -1,6 +1,7 @@
 #pragma once
 
 #include <thread>
+#include <vector>
 
 #include <glm/glm.hpp>
 
@@ -14,9 +15,12 @@
 class RayTracer {
 public: 
     SceneNode * root;
+    SceneNode * root_orig;
 
     // Image to write to, set to a given width and height
-    Image & image;
+    std::vector<Image *> & images;
+    Image *current_image;
+    int curr_frame;
 
     // Viewing parameters
     glm::vec3 eye;
@@ -35,18 +39,20 @@ public:
     std::stack<glm::mat4> matrix_stack;
 
     RayTracer(SceneNode * root,
-            Image & image,
+            std::vector<Image *> & images,
             glm::vec3 & eye,
             glm::vec3 & view,
             glm::vec3 & up,
             double fovy,
             glm::vec3 & ambient,
             std::list<Light *> & lights,
-            int num_workers): root(root), image(image), eye(eye), view(view), up(up), fovy(fovy), ambient(ambient), lights(lights), num_workers(num_workers) {}
+            int num_workers): root(root), images(images), eye(eye), view(view), up(up), fovy(fovy), ambient(ambient), lights(lights), num_workers(num_workers) {
+                root_orig = root;
+            }
 
     SceneNode *flattenScene(SceneNode * new_root, SceneNode * root);
 
     void transformToWorld(glm::vec3 &coords);
 
-    void render();
+    void render(int frame);
 };

@@ -5,8 +5,8 @@ using namespace std;
 using namespace glm;
 
 void RayTracerWorker::launch() {
-    size_t h = parent->image.height();
-	size_t w = parent->image.width();
+    size_t h = parent->current_image->height();
+	size_t w = parent->current_image->width();
 
     // divide img to col * col squares
     int cols = ceil(sqrt(parent->num_workers));
@@ -65,15 +65,15 @@ void RayTracerWorker::launch() {
 			color = ray.getColor(parent->root, parent->lights, parent->ambient, 0);
 
 			// Red: 
-			parent->image(x, y, 0) = (double)(color.x);
+			parent->current_image->operator()(x, y, 0) = (double)(color.x);
 			// Green: 
-			parent->image(x, y, 1) = (double)(color.y);
+			parent->current_image->operator()(x, y, 1) = (double)(color.y);
 			// Blue: 
-			parent->image(x, y, 2) = (double)(color.z);
+			parent->current_image->operator()(x, y, 2) = (double)(color.z);
 
 			++progress;
 		}
 	}
 
-    cout << "worker " << workerId << " finished" << endl;
+    //cout << "worker " << workerId << " finished" << endl;
 }

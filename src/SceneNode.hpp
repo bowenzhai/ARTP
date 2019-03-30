@@ -3,6 +3,7 @@
 #pragma once
 
 #include "Material.hpp"
+#include "Animation.hpp"
 
 #include <glm/glm.hpp>
 
@@ -52,6 +53,10 @@ public:
 	NodeType m_nodeType;
 	std::string m_name;
 	unsigned int m_nodeId;
+
+    //Animation
+    Animation *anim = nullptr;
+    void apply_animation(int startframe, int duration, std::string transform, glm::vec3 amount, std::string transition);
 
 private:
 	// The number of SceneNode instances.

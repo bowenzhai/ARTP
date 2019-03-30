@@ -258,6 +258,7 @@ rootnode:add_child(tube_8)
 darksamus = gr.node('darksamus')
 darksamus:rotate('y', 45)
 darksamus:translate(-17, 6, 20)
+darksamus:animate(0, 5, 'translate', {5, 0, 0}, 'linear')
 rootnode:add_child(darksamus)
 
 torso_joint = gr.joint('torso_joint', {-45, 0, 45}, {-45, 0, 45})
@@ -611,10 +612,11 @@ right_elbow_joint:add_child(right_cannon_2)
 
 white_light = gr.light({2, 12, 30}, {0.9, 0.9, 0.9}, {1, 0, 0})
 
-gr.render(rootnode, './Generated/testscene1.png',
-660, 270,
+gr.render(rootnode, './Generated/testscene/',
+330, 135,
+--660, 270,
 --2100, 900,
 {0, 15, 75}, {0, 0, -1}, {0, 1, 0}, 
 --{0, 120, 0}, {0, -1, 0}, {0, 0, -1}, 
 
-50, {0.3, 0.3, 0.3}, {white_light})
+50, {0.3, 0.3, 0.3}, {white_light}, 24)

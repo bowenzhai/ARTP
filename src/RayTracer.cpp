@@ -20,6 +20,19 @@ SceneNode *RayTracer::flattenScene(SceneNode * new_root, SceneNode * node) {
 		new_matrix = glm::rotate(new_matrix, radians(degree), vec3(1, 0, 0));
 	}
 
+	// animation
+	Animation *a = node->anim;
+	if (a != nullptr) {
+		if (curr_frame > a->m_startframe && curr_frame <= (a->m_startframe + a->m_duration)) {
+			mat4 intermediate = a->generateIntermetiate(curr_frame);
+			new_matrix = intermediate * new_matrix;
+			if (curr_frame == (a->m_startframe + a->m_duration)) {
+				// save the position
+				node->trans = intermediate * node->trans;
+			}
+		}
+	}
+
     //cout << glm::to_string(new_matrix) << endl;
 	matrix_stack.push(new_matrix);
 
@@ -42,8 +55,8 @@ SceneNode *RayTracer::flattenScene(SceneNode * new_root, SceneNode * node) {
 }
 
 void RayTracer::transformToWorld(glm::vec3 &coords) {
-	float n_x = image.width();
-	float n_y = image.height();
+	float n_x = current_image->width();
+	float n_y = current_image->height();
 	float d = 1.0f;
 
 	vec4 coords_4 = vec4(coords, 1.0f);
@@ -71,13 +84,13 @@ void RayTracer::transformToWorld(glm::vec3 &coords) {
 	coords = (vec3)coords_4;
 }
 
-void RayTracer::render() {
-
-  // Fill in raytracing code here...  
+void RayTracer::render(int frame) {
+  current_image = images[frame];
+  curr_frame = frame;
 
   std::cout << "Calling RayTracer::render(\n" <<
 		  "\t" << *root <<
-          "\t" << "Image(width:" << image.width() << ", height:" << image.height() << ")\n"
+          "\t" << "Image(width:" << current_image->width() << ", height:" << current_image->height() << ")\n"
           "\t" << "eye:  " << glm::to_string(eye) << std::endl <<
 		  "\t" << "view: " << glm::to_string(view) << std::endl <<
 		  "\t" << "up:   " << glm::to_string(up) << std::endl <<
@@ -93,15 +106,16 @@ void RayTracer::render() {
 	std::cout <<")" << std::endl;
 
 	// flatten scene
+	matrix_stack.empty();
 	matrix_stack.push(glm::mat4(1.0f));
 	// shallow copy root node
-	root_flattened = new SceneNode(root->m_name);
-	root_flattened->m_nodeType = root->m_nodeType;
-	root_flattened->m_name = root->m_name;
-	root_flattened->trans = root->trans;
-	root_flattened->invtrans = root->invtrans;
+	root_flattened = new SceneNode(root_orig->m_name);
+	root_flattened->m_nodeType = root_orig->m_nodeType;
+	root_flattened->m_name = root_orig->m_name;
+	root_flattened->trans = root_orig->trans;
+	root_flattened->invtrans = root_orig->invtrans;
 
-	root = flattenScene(root_flattened, root);
+	root = flattenScene(root_flattened, root_orig);
 
 	RayTracerWorker *workers[num_workers];
 	thread threads[num_workers];

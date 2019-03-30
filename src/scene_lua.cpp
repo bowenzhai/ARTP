@@ -45,6 +45,7 @@
 #include <cstdio>
 #include <vector>
 #include <map>
+#include <string>
 
 #include "lua488.hpp"
 
@@ -354,7 +355,7 @@ int gr_render_cmd(lua_State* L)
   gr_node_ud* root = (gr_node_ud*)luaL_checkudata(L, 1, "gr.node");
   luaL_argcheck(L, root != 0, 1, "Root node expected");
 
-  const char* filename = luaL_checkstring(L, 2);
+  const char* foldername = luaL_checkstring(L, 2);
 
   int width = luaL_checknumber(L, 3);
   int height = luaL_checknumber(L, 4);
@@ -386,11 +387,26 @@ int gr_render_cmd(lua_State* L)
     lua_pop(L, 1);
   }
 
-	Image im( width, height);
-  RayTracer rt(root->node, im, eye, view, up, fov, ambient, lights, num_workers_global);
-	rt.render();
-    im.savePng( filename );
+  int frames = luaL_checknumber(L, 11);
+  std::vector<Image *> imgs;
+  for (int i = 0; i < frames; ++i) {
+    Image *im = new Image( width, height);
+    imgs.emplace_back(im);
+  }
 
+  RayTracer rt(root->node, imgs, eye, view, up, fov, ambient, lights, num_workers_global);
+
+  for (int i = 0; i < frames; ++i) {
+    rt.render(i);
+    std::string foldername_string = foldername;
+    std::string cmd = "mkdir -p " + foldername_string;
+    system(cmd.c_str());
+    std::string filename = foldername_string + "img" + std::to_string(i) + ".png";
+    imgs[i]->savePng( filename );
+    delete imgs[i];
+    std::cout << "rendered frame " << i << " of " << frames << std::endl;
+  }
+    
 	return 0;
 }
 
@@ -553,6 +569,42 @@ int gr_node_translate_cmd(lua_State* L)
   return 0;
 }
 
+// Add an Animation to a node.
+extern "C"
+int gr_node_animate_cmd(lua_State* L)
+{
+  GRLUA_DEBUG_CALL;
+  
+  gr_node_ud* selfdata = (gr_node_ud*)luaL_checkudata(L, 1, "gr.node");
+  luaL_argcheck(L, selfdata != 0, 1, "Node expected");
+
+  SceneNode* self = selfdata->node;
+
+//  const char* foldername = luaL_checkstring(L, 2);
+
+//     int width = luaL_checknumber(L, 3);
+//   int height = luaL_checknumber(L, 4);
+
+//   glm::vec3 eye;
+//   glm::vec3 view, up;
+  
+//   get_tuple(L, 5, &eye[0], 3);
+//   get_tuple(L, 6, &view[0], 3);
+//   get_tuple(L, 7, &up[0], 3);
+
+  int startframe = luaL_checknumber(L, 2);
+  int duration = luaL_checknumber(L, 3);
+  const char* transform = luaL_checkstring(L, 4);
+
+  glm::vec3 amount;
+  get_tuple(L, 5, &amount[0], 3);
+  const char* transition = luaL_checkstring(L, 6);
+
+  self->apply_animation(startframe, duration, std::string(transform), amount, std::string(transition));
+
+  return 0;
+}
+
 // Rotate a node.
 extern "C"
 int gr_node_rotate_cmd(lua_State* L)
@@ -640,6 +692,7 @@ static const luaL_Reg grlib_node_methods[] = {
   {"scale", gr_node_scale_cmd},
   {"rotate", gr_node_rotate_cmd},
   {"translate", gr_node_translate_cmd},
+  {"animate", gr_node_animate_cmd},
   {"render", gr_render_cmd},
   {0, 0}
 };
