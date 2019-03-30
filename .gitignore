@@ -4,7 +4,8 @@ Index_Example*/Makefile
 Instanced_Example*/Makefile
 shared/glfw**/Makefile
 shared/imgui**/Makefile
-
+.vscode/
+Generated/
 build
 
 *.a
@@ -32,5 +33,3 @@ A4_[Ss]olution/A4
 
 */Assets/backup
 
-/.vscode
-/src/Generated

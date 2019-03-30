@@ -609,7 +609,7 @@ right_elbow_joint:add_child(right_cannon_2)
 
 --[[dark samus end]]
 
-darksamus:animate(0, 24, 'translate', {0, 10, 0}, 'ease')
+darksamus:animate(0, 24, 'translate', {0, 10, 0}, 'ease-in-out')
 --darksamus:animate(6, 5, 'translate', {-5, 0, 0}, 'linear')
 --left_arm_joint:animate(0, 4, 'rotate', {-45, 0, 0}, 'linear')
 --pillar_bottom_torus:animate(0, 4, 'scale', {1, 2, 1}, 'linear')
