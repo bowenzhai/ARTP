@@ -55,7 +55,7 @@ public:
 	unsigned int m_nodeId;
 
     //Animation
-    Animation *anim = nullptr;
+    std::list<Animation *>anim;
     void apply_animation(int startframe, int duration, std::string transform, glm::vec3 amount, std::string transition);
 
 private:

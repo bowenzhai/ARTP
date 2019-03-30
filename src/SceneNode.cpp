@@ -41,8 +41,9 @@ SceneNode::SceneNode(const SceneNode & other)
 	for(SceneNode * child : other.children) {
 		this->children.push_front(new SceneNode(*child));
 	}
-	if (other.anim != nullptr) {
-		this->anim = new Animation(*(other.anim));
+
+	for(Animation * a : other.anim) {
+		this->anim.emplace_back(new Animation(*a));
 	}
 }
 
@@ -51,8 +52,8 @@ SceneNode::~SceneNode() {
 	for(SceneNode * child : children) {
 		delete child;
 	}
-	if (anim != nullptr) {
-		delete anim;
+	for (Animation * a : anim) {
+		delete a;
 	}
 }
 
@@ -114,7 +115,7 @@ void SceneNode::translate(const glm::vec3& amount) {
 }
 
 void SceneNode::apply_animation(int startframe, int duration, std::string transform, glm::vec3 amount, std::string transition) {
-	anim = new Animation(startframe, duration, transform, amount, transition);
+	anim.emplace_back(new Animation(startframe, duration, transform, amount, transition));
 }
 
 

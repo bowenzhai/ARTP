@@ -21,11 +21,11 @@ SceneNode *RayTracer::flattenScene(SceneNode * new_root, SceneNode * node) {
 	}
 
 	// animation
-	Animation *a = node->anim;
-	if (a != nullptr) {
+	list<Animation *> anim = node->anim;
+	for (Animation * a : anim) {
 		if (curr_frame > a->m_startframe && curr_frame <= (a->m_startframe + a->m_duration)) {
 			mat4 intermediate = a->generateIntermetiate(curr_frame);
-			new_matrix = intermediate * new_matrix;
+			new_matrix = new_matrix * intermediate;
 			if (curr_frame == (a->m_startframe + a->m_duration)) {
 				// save the position
 				node->trans = intermediate * node->trans;
