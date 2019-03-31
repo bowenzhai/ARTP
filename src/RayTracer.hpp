@@ -35,6 +35,9 @@ public:
     // Num workers
     int num_workers;
 
+    // AA
+    double tolarance;
+
     SceneNode *root_flattened;
     std::stack<glm::mat4> matrix_stack;
 
@@ -46,13 +49,16 @@ public:
             double fovy,
             glm::vec3 & ambient,
             std::list<Light *> & lights,
-            int num_workers): root(root), images(images), eye(eye), view(view), up(up), fovy(fovy), ambient(ambient), lights(lights), num_workers(num_workers) {
+            int num_workers,
+            double tolarance): root(root), images(images), eye(eye), view(view), up(up), fovy(fovy), ambient(ambient), lights(lights), num_workers(num_workers), tolarance(tolarance) {
                 root_orig = root;
             }
 
     SceneNode *flattenScene(SceneNode * new_root, SceneNode * root);
 
     void transformToWorld(glm::vec3 &coords);
+
+    void detectVariation();
 
     void render(int frame);
 };

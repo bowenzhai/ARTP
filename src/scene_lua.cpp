@@ -430,7 +430,9 @@ int gr_render_cmd(lua_State* L)
     imgs.emplace_back(im);
   }
 
-  RayTracer rt(root->node, imgs, eye, view, up, fov, ambient, lights, num_workers_global);
+  double tol = luaL_checknumber(L, 12);
+
+  RayTracer rt(root->node, imgs, eye, view, up, fov, ambient, lights, num_workers_global, tol);
 
   for (int i = 0; i < frames; ++i) {
     rt.render(i);

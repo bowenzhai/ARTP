@@ -84,6 +84,61 @@ void RayTracer::transformToWorld(glm::vec3 &coords) {
 	coords = (vec3)coords_4;
 }
 
+void RayTracer::detectVariation() {
+	list<pair<int, int>> outliers;
+	int w = current_image->width();
+	int h = current_image->height();
+	for (int y = 0; y < h; ++y) {
+		for (int x = 0; x < w; ++x) {
+			float red_delta = 0.0f;
+			float green_delta = 0.0f;
+			float blue_delta = 0.0f;
+		
+			// Red: 
+			float current_red = current_image->operator()(x, y, 0);
+			// Green: 
+			float current_green = current_image->operator()(x, y, 1);
+			// Blue: 
+			float current_blue = current_image->operator()(x, y, 2);
+			if (y - 1 >= 0) {
+				red_delta += (current_image->operator()(x, y-1, 0) - current_red);
+				green_delta += (current_image->operator()(x, y-1, 1) - current_green);
+				blue_delta += (current_image->operator()(x, y-1, 2) - current_blue);
+			}
+			if (y + 1 < h) {
+				red_delta += (current_image->operator()(x, y+1, 0) - current_red);
+				green_delta += (current_image->operator()(x, y+1, 1) - current_green);
+				blue_delta += (current_image->operator()(x, y+1, 2) - current_blue);
+			}
+			if (x - 1 >= 0) {
+				red_delta += (current_image->operator()(x-1, y, 0) - current_red);
+				green_delta += (current_image->operator()(x-1, y, 1) - current_green);
+				blue_delta += (current_image->operator()(x-1, y, 2) - current_blue);
+			}
+			if (x + 1 < w) {
+				red_delta += (current_image->operator()(x+1, y, 0) - current_red);
+				green_delta += (current_image->operator()(x+1, y, 1) - current_green);
+				blue_delta += (current_image->operator()(x+1, y, 2) - current_blue);
+			}
+
+			if (red_delta > tolarance || green_delta > tolarance || blue_delta > tolarance) {
+				outliers.emplace_back(pair<int, int>(x, y));
+			}
+		}
+	}
+
+	for (auto p : outliers) {
+		int x = p.first;
+		int y = p.second;
+		// Red: 
+		current_image->operator()(x, y, 0) = 1;
+		// Green: 
+		current_image->operator()(x, y, 1) = 0;
+		// Blue: 
+		current_image->operator()(x, y, 2) = 0;
+	}
+}
+
 void RayTracer::render(int frame) {
   current_image = images[frame];
   curr_frame = frame;
@@ -126,5 +181,9 @@ void RayTracer::render(int frame) {
 	
 	for (int i = 0; i < num_workers; ++i) {
 		threads[i].join();
+	}
+
+	if (tolarance < 1) {
+		detectVariation();
 	}
 }
