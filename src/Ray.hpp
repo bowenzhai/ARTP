@@ -8,6 +8,7 @@
 #include "GeometryNode.hpp"
 #include "JointNode.hpp"
 #include "Light.hpp"
+#include "AreaLight.hpp"
 #include "Material.hpp"
 #include "PhongMaterial.hpp"
 #include "ReflectiveMaterial.hpp"

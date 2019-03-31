@@ -130,20 +130,41 @@ vec3 Ray::getColor(SceneNode * root, list<Light *> lights, vec3 & ambient, int m
         p = pointAt(t);
         
         for (auto light : lights) {
-            //shadow
-            Ray reverse_light = Ray(p + N * BIAS, glm::normalize(light->position - p), x, y);
             vec3 N_reverse;
             float t_reverse;
             vec3 color_intermediate;
-            if (reverse_light.hit(root, t_reverse, N_reverse) != nullptr && t_reverse < glm::length(light->position - p)) {
-                // // reflective
-                // if (type == MaterialType::ReflectiveMaterial && maxHits < MAX_HITS) {
-                //     Ray view_reflected = ggReflection(p  + N * BIAS, dir, N, x, y);
-                //     color_intermediate += reflectiveMaterial->m_reflectiveness * view_reflected.getColor(root, lights, ambient, maxHits + 1);
-                // } else {
-                //     continue;
-                // }
-                continue;
+            float light_ratio = 1.0f;
+            //shadow
+            if (light->lightType == LightType::AreaLight) {
+                AreaLight *areaLight = static_cast<AreaLight *>(light);
+                int not_hit = areaLight->numsamples;
+                list <Light *> samplePoints = areaLight->getSamplePoints();
+                for (auto sample : samplePoints) {
+                    //cout << glm::to_string(sample->position) << endl;
+
+                    Ray reverse_sample = Ray(p + N * BIAS, glm::normalize(sample->position - p), x, y);
+                
+                    if (reverse_sample.hit(root, t_reverse, N_reverse) != nullptr && t_reverse < glm::length(sample->position - p)) {
+                        --not_hit;
+                    }
+                }
+                light_ratio = (float)not_hit / (float)areaLight->numsamples;
+                if (light_ratio != 1 && light_ratio != 0) {
+                    //cout << endl;
+                }
+            } else {
+                Ray reverse_light = Ray(p + N * BIAS, glm::normalize(light->position - p), x, y);
+                
+                if (reverse_light.hit(root, t_reverse, N_reverse) != nullptr && t_reverse < glm::length(light->position - p)) {
+                    // // reflective
+                    // if (type == MaterialType::ReflectiveMaterial && maxHits < MAX_HITS) {
+                    //     Ray view_reflected = ggReflection(p  + N * BIAS, dir, N, x, y);
+                    //     color_intermediate += reflectiveMaterial->m_reflectiveness * view_reflected.getColor(root, lights, ambient, maxHits + 1);
+                    // } else {
+                    //     continue;
+                    // }
+                    continue;
+                }
             }
 
             vec3 light_dir = light->position - p;
@@ -185,6 +206,7 @@ vec3 Ray::getColor(SceneNode * root, list<Light *> lights, vec3 & ambient, int m
                 delete view_refracted;
             }
 
+            color_intermediate *= light_ratio;
             color_intermediate /= light->falloff[0] + light->falloff[1] + light->falloff[2];
             color += color_intermediate;
         } 

@@ -328,17 +328,53 @@ int gr_light_cmd(lua_State* L)
   gr_light_ud* data = (gr_light_ud*)lua_newuserdata(L, sizeof(gr_light_ud));
   data->light = 0;
 
-  
-  Light l;
-
+  double pos[3];
   double col[3];
-  get_tuple(L, 1, &l.position[0], 3);
+  double fallo[3];
+  get_tuple(L, 1, pos, 3);
   get_tuple(L, 2, col, 3);
-  get_tuple(L, 3, l.falloff, 3);
+  get_tuple(L, 3, fallo, 3);
 
-  l.colour = glm::vec3(col[0], col[1], col[2]);
+  glm::vec3 position = glm::vec3(pos[0], pos[1], pos[2]);
+  glm::vec3 colour = glm::vec3(col[0], col[1], col[2]);
   
-  data->light = new Light(l);
+  data->light = new Light(position, colour, fallo);
+
+  luaL_newmetatable(L, "gr.light");
+  lua_setmetatable(L, -2);
+
+  return 1;
+}
+
+// Make an Area light
+extern "C"
+int gr_area_light_cmd(lua_State* L)
+{
+  GRLUA_DEBUG_CALL;
+
+  gr_light_ud* data = (gr_light_ud*)lua_newuserdata(L, sizeof(gr_light_ud));
+  data->light = 0;
+
+  glm::vec3 position;
+  get_tuple(L, 1, &position[0], 3);
+
+  glm::vec3 colour;
+  get_tuple(L, 2, &colour[0], 3);
+
+  double fallo[3];
+  get_tuple(L, 3, fallo, 3);
+
+  glm::vec3 dir;
+  get_tuple(L, 4, &dir[0], 3); 
+
+  glm::vec3 up;
+  get_tuple(L, 5, &up[0], 3);
+
+  double size = luaL_checknumber(L, 6);
+
+  int numsamples = luaL_checknumber(L, 7);
+  
+  data->light = new AreaLight(position, colour, fallo, dir, up, size, numsamples);
 
   luaL_newmetatable(L, "gr.light");
   lua_setmetatable(L, -2);
@@ -669,6 +705,7 @@ static const luaL_Reg grlib_functions[] = {
   {"nh_box", gr_nh_box_cmd},
   {"mesh", gr_mesh_cmd},
   {"light", gr_light_cmd},
+  {"area_light", gr_area_light_cmd},
   {"render", gr_render_cmd},
   {0, 0}
 };

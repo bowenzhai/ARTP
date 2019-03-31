@@ -8,15 +8,6 @@
 
 using namespace glm;
 
-Light::Light()
-  : colour(0.0, 0.0, 0.0),
-    position(0.0, 0.0, 0.0)
-{
-  falloff[0] = 1.0;
-  falloff[1] = 0.0;
-  falloff[2] = 0.0;
-}
-
 vec3 Light::directLight(const vec3 &p, const vec3 &N) {
   vec3 lightDir = glm::normalize(position - p);
   float diff = max(glm::dot(N, lightDir), 0.0f);
