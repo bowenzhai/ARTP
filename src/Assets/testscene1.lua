@@ -4,260 +4,132 @@ grey = gr.phong_material({0.15, 0.18, 0.25}, {0.1, 0.1, 0.1}, 10)
 blue = gr.phong_material({0.25, 0.95, 0.95}, {0.1, 0.1, 0.1}, 10)
 brown = gr.phong_material({46/255, 41/255, 32/255}, {0.1, 0.1, 0.1}, 10)
 yellow = gr.phong_material({253/255, 188/255, 98/255}, {0.1, 0.1, 0.1}, 10)
-transparent = gr.phong_material({120/255, 120/255, 140/255}, {0.1, 0.1, 0.1}, 10)
 
 grey_r = gr.reflective_material({0.15, 0.18, 0.25}, 0.1, 0)
 blue_r = gr.reflective_material({0.25, 0.95, 0.95}, 0.5, 0)
 
-blue_ra = gr.refractive_material({0.25, 0.95, 0.95}, 1.3, 0)
 
 -- floor
 floor = gr.cube('floor')
 floor:translate(-0.5, -0.5, -0.5)
 floor:set_material(brown)
-floor:scale(100, 1, 100)
+floor:scale(50, 1, 50)
 rootnode:add_child(floor)
-
-light_ground_1 = gr.cylinder('light_ground_1')
-light_ground_1:set_material(yellow)
-light_ground_1:scale(0.7, 50, 0.7)
-light_ground_1:rotate('x', 90)
-rootnode:add_child(light_ground_1)
-
-light_ground_2 = gr.cylinder('light_ground_2')
-light_ground_2:set_material(yellow)
-light_ground_2:scale(0.7, 50, 0.7)
-light_ground_2:rotate('x', -90)
-rootnode:add_child(light_ground_2)
-
-light_ground_3 = gr.cylinder('light_ground_3')
-light_ground_3:set_material(yellow)
-light_ground_3:scale(0.7, 50, 0.7)
-light_ground_3:rotate('z', 90)
-rootnode:add_child(light_ground_3)
-
-light_ground_4 = gr.cylinder('light_ground_4')
-light_ground_4:set_material(yellow)
-light_ground_4:scale(0.7, 50, 0.7)
-light_ground_4:rotate('z', -90)
-rootnode:add_child(light_ground_4)
 
 --walls
 wall1 = gr.cube('wall1')
 wall1:set_material(brown)
 wall1:translate(-0.5, -0.5, -0.5)
-wall1:scale(1, 50, 100)
-wall1:translate(-50, 25, 0)
+wall1:scale(1, 25, 50)
+wall1:translate(-25, 12.5, 0)
 rootnode:add_child(wall1)
 
 wall2 = gr.cube('wall2')
 wall2:set_material(brown)
 wall2:translate(-0.5, -0.5, -0.5)
-wall2:scale(1, 50, 100)
-wall2:translate(50, 25, 0)
+wall2:scale(1, 25, 50)
+wall2:translate(25, 12.5, 0)
 rootnode:add_child(wall2)
 
 wall3 = gr.cube('wall3')
 wall3:set_material(brown)
 wall3:translate(-0.5, -0.5, -0.5)
-wall3:scale(100, 50, 1)
-wall3:translate(0, 25, -50)
+wall3:scale(50, 25, 1)
+wall3:translate(0, 12.5, -25)
 rootnode:add_child(wall3)
 
 --cieling
-cieling = gr.cube('cieling')
-cieling:translate(-0.5, -0.5, -0.5)
-cieling:set_material(brown)
-cieling:scale(100, 1, 100)
-cieling:translate(0, 50, 0)
-rootnode:add_child(cieling)
+-- cieling = gr.cube('cieling')
+-- cieling:translate(-0.5, -0.5, -0.5)
+-- cieling:set_material(brown)
+-- cieling:scale(50, 1, 50)
+-- cieling:translate(0, 25, 0)
+-- rootnode:add_child(cieling)
 
 --center pillar
 pillar_bottom_torus = gr.torus('pillar_bottom_torus', 0.2)
 pillar_bottom_torus:set_material(brown)
-pillar_bottom_torus:scale(10, 10, 10)
-pillar_bottom_torus:translate(0, 1, 0)
+pillar_bottom_torus:scale(5, 5, 5)
+pillar_bottom_torus:translate(0, 0.5, 0)
 rootnode:add_child(pillar_bottom_torus)
 
 pillar_bottom_cylinder = gr.cylinder('pillar_bottom_cylinder')
 pillar_bottom_cylinder:set_material(brown)
-pillar_bottom_cylinder:scale(8, 10, 8)
+pillar_bottom_cylinder:scale(4, 5, 4)
 rootnode:add_child(pillar_bottom_cylinder)
 
 pillar_middle_torus = gr.torus('pillar_middle_torus', 0.2)
 pillar_middle_torus:set_material(brown)
-pillar_middle_torus:scale(10, 10, 10)
-pillar_middle_torus:translate(0, 12, 0)
+pillar_middle_torus:scale(5, 5, 5)
+pillar_middle_torus:translate(0, 6, 0)
 rootnode:add_child(pillar_middle_torus)
 
 pillar_middle_cylinder = gr.cylinder('pillar_middle_cylinder')
 pillar_middle_cylinder:set_material(brown)
-pillar_middle_cylinder:scale(10, 2, 10)
-pillar_middle_cylinder:translate(0, 14, 0)
+pillar_middle_cylinder:scale(5, 1, 5)
+pillar_middle_cylinder:translate(0, 7, 0)
 rootnode:add_child(pillar_middle_cylinder)
 
 pillar_middle_torus_light = gr.torus('pillar_middle_torus_light', 0.1)
 pillar_middle_torus_light:set_material(yellow)
-pillar_middle_torus_light:scale(10, 2, 10)
-pillar_middle_torus_light:translate(0, 15, 0)
+pillar_middle_torus_light:scale(5, 1, 5)
+pillar_middle_torus_light:translate(0, 7.5, 0)
 rootnode:add_child(pillar_middle_torus_light)
 
 pillar_middle_cylinder_glass = gr.cylinder('pillar_middle_cylinder_glass')
 pillar_middle_cylinder_glass:set_material(blue)
-pillar_middle_cylinder_glass:scale(12, 20, 12)
-pillar_middle_cylinder_glass:translate(0, 16, 0)
+pillar_middle_cylinder_glass:scale(6, 10, 6)
+pillar_middle_cylinder_glass:translate(0, 8, 0)
 rootnode:add_child(pillar_middle_cylinder_glass)
 
 pillar_top_torus = gr.torus('pillar_top_torus', 0.2)
 pillar_top_torus:set_material(brown)
-pillar_top_torus:scale(10, 10, 10)
-pillar_top_torus:translate(0, 40, 0)
+pillar_top_torus:scale(5, 5, 5)
+pillar_top_torus:translate(0, 20, 0)
 rootnode:add_child(pillar_top_torus)
 
 pillar_top_cylinder = gr.cylinder('pillar_top_cylinder')
 pillar_top_cylinder:set_material(brown)
-pillar_top_cylinder:scale(10, 2, 10)
-pillar_top_cylinder:translate(0, 36, 0)
+pillar_top_cylinder:scale(5, 1, 5)
+pillar_top_cylinder:translate(0, 18, 0)
 rootnode:add_child(pillar_top_cylinder)
 
-pillar_top_torus_light = gr.torus('pillar_top_torus_light', 0.2)
+pillar_top_torus_light = gr.torus('pillar_top_torus_light', 0.1)
 pillar_top_torus_light:set_material(yellow)
-pillar_top_torus_light:scale(10, 2, 10)
-pillar_top_torus_light:translate(0, 37, 0)
+pillar_top_torus_light:scale(5, 1, 5)
+pillar_top_torus_light:translate(0, 18.5, 0)
 rootnode:add_child(pillar_top_torus_light)
 
 --surrounding pillars
 pillar_surrounding_1 = gr.cylinder('pillar_surrounding_1')
 pillar_surrounding_1:set_material(brown)
-pillar_surrounding_1:scale(1.2, 52, 1.2)
-pillar_surrounding_1:translate(10, 0, 10)
+pillar_surrounding_1:scale(0.6, 26, 0.6)
+pillar_surrounding_1:translate(5, 0, 5)
 rootnode:add_child(pillar_surrounding_1)
 
 pillar_surrounding_2 = gr.cylinder('pillar_surrounding_2')
 pillar_surrounding_2:set_material(brown)
-pillar_surrounding_2:scale(1.2, 52, 1.2)
-pillar_surrounding_2:translate(10, 0, -10)
+pillar_surrounding_2:scale(0.6, 26, 0.6)
+pillar_surrounding_2:translate(5, 0, -5)
 rootnode:add_child(pillar_surrounding_2)
 
 pillar_surrounding_3 = gr.cylinder('pillar_surrounding_3')
 pillar_surrounding_3:set_material(brown)
-pillar_surrounding_3:scale(1.2, 52, 1.2)
-pillar_surrounding_3:translate(-10, 0, 10)
+pillar_surrounding_3:scale(0.6, 26, 0.6)
+pillar_surrounding_3:translate(-5, 0, 5)
 rootnode:add_child(pillar_surrounding_3)
 
 pillar_surrounding_4 = gr.cylinder('pillar_surrounding_4')
 pillar_surrounding_4:set_material(brown)
-pillar_surrounding_4:scale(1.2, 52, 1.2)
-pillar_surrounding_4:translate(-10, 0, -10)
+pillar_surrounding_4:scale(0.6, 26, 0.6)
+pillar_surrounding_4:translate(-5, 0, -5)
 rootnode:add_child(pillar_surrounding_4)
-
---secondary pillars
-pillar_secondary_1 = gr.cylinder('pillar_secondary_1')
-pillar_secondary_1:set_material(brown)
-pillar_secondary_1:scale(5, 25, 5)
-pillar_secondary_1:translate(25, 0, 25)
-rootnode:add_child(pillar_secondary_1)
-
-pillar_secondary_torus_light_1 = gr.torus('pillar_secondary_torus_light_1', 0.1)
-pillar_secondary_torus_light_1:set_material(yellow)
-pillar_secondary_torus_light_1:scale(7, 7, 7)
-pillar_secondary_torus_light_1:translate(25, 0, 25)
-rootnode:add_child(pillar_secondary_torus_light_1)
-
-pillar_secondary_2 = gr.cylinder('pillar_secondary_2')
-pillar_secondary_2:set_material(brown)
-pillar_secondary_2:scale(5, 25, 5)
-pillar_secondary_2:translate(25, 0, -25)
-rootnode:add_child(pillar_secondary_2)
-
-pillar_secondary_torus_light_2 = gr.torus('pillar_secondary_torus_light_2', 0.1)
-pillar_secondary_torus_light_2:set_material(yellow)
-pillar_secondary_torus_light_2:scale(7, 7, 7)
-pillar_secondary_torus_light_2:translate(25, 0, -25)
-rootnode:add_child(pillar_secondary_torus_light_2)
-
-pillar_secondary_3 = gr.cylinder('pillar_secondary_3')
-pillar_secondary_3:set_material(brown)
-pillar_secondary_3:scale(5, 25, 5)
-pillar_secondary_3:translate(-25, 0, 25)
-rootnode:add_child(pillar_secondary_3)
-
-pillar_secondary_torus_light_3 = gr.torus('pillar_secondary_torus_light_3', 0.1)
-pillar_secondary_torus_light_3:set_material(yellow)
-pillar_secondary_torus_light_3:scale(7, 7, 7)
-pillar_secondary_torus_light_3:translate(-25, 0, 25)
-rootnode:add_child(pillar_secondary_torus_light_3)
-
-pillar_secondary_4 = gr.cylinder('pillar_secondary_4')
-pillar_secondary_4:set_material(brown)
-pillar_secondary_4:scale(5, 25, 5)
-pillar_secondary_4:translate(-25, 0, -25)
-rootnode:add_child(pillar_secondary_4)
-
-pillar_secondary_torus_light_4 = gr.torus('pillar_secondary_torus_light_4', 0.1)
-pillar_secondary_torus_light_4:set_material(yellow)
-pillar_secondary_torus_light_4:scale(7, 7, 7)
-pillar_secondary_torus_light_4:translate(-25, 0, -25)
-rootnode:add_child(pillar_secondary_torus_light_4)
-
---tubes
-tube_1 = gr.cylinder('tube_1')
-tube_1:set_material(transparent)
-tube_1:scale(1, 50, 1)
-tube_1:rotate('x', 90)
-tube_1:translate(-25, 30, -25)
-rootnode:add_child(tube_1)
-
-tube_2 = gr.cylinder('tube_2')
-tube_2:set_material(transparent)
-tube_2:scale(1, 50, 1)
-tube_2:rotate('x', 90)
-tube_2:translate(25, 30, -25)
-rootnode:add_child(tube_2)
-
-tube_3 = gr.cylinder('tube_3')
-tube_3:set_material(transparent)
-tube_3:scale(1, 50, 1)
-tube_3:rotate('z', 90)
-tube_3:translate(25, 30, -25)
-rootnode:add_child(tube_3)
-
-tube_4 = gr.cylinder('tube_4')
-tube_4:set_material(transparent)
-tube_4:scale(1, 25, 1)
-tube_4:rotate('z', 90)
-tube_4:translate(25, 30, 0)
-rootnode:add_child(tube_4)
-
-tube_5 = gr.cylinder('tube_5')
-tube_5:set_material(transparent)
-tube_5:scale(1, 30, 1)
-tube_5:translate(25, 0, 25)
-rootnode:add_child(tube_5)
-
-tube_6 = gr.cylinder('tube_6')
-tube_6:set_material(transparent)
-tube_6:scale(1, 30, 1)
-tube_6:translate(25, 0, -25)
-rootnode:add_child(tube_6)
-
-tube_7 = gr.cylinder('tube_7')
-tube_7:set_material(transparent)
-tube_7:scale(1, 50, 1)
-tube_7:translate(-25, 0, 25)
-rootnode:add_child(tube_7)
-
-tube_8 = gr.cylinder('tube_8')
-tube_8:set_material(transparent)
-tube_8:scale(1, 30, 1)
-tube_8:translate(-25, 0, -25)
-rootnode:add_child(tube_8)
 
 --[[dark samus begin]]
 -- body
 darksamus = gr.node('darksamus')
 darksamus:rotate('y', 45)
-darksamus:translate(-17, 6, 20)
+darksamus:translate(-10, 6, 20)
 rootnode:add_child(darksamus)
 
 torso_joint = gr.joint('torso_joint', {-45, 0, 45}, {-45, 0, 45})
@@ -609,20 +481,8 @@ right_elbow_joint:add_child(right_cannon_2)
 
 --[[dark samus end]]
 
---darksamus:animate(0, 24, 'translate', {0, 10, 0}, 'ease-in-out')
---darksamus:animate(6, 5, 'translate', {-5, 0, 0}, 'linear')
---left_arm_joint:animate(0, 4, 'rotate', {-45, 0, 0}, 'linear')
---pillar_bottom_torus:animate(0, 4, 'scale', {1, 2, 1}, 'linear')
+white_light = gr.light({2, 12, 30}, {0.9, 0.9, 0.9}, {1, 0, 0})
 
---white_light = gr.light({2, 12, 30}, {0.9, 0.9, 0.9}, {1, 0, 0})
-
-white_light = gr.area_light({2, 12, 30}, {0.9, 0.9, 0.9}, {1, 0, 0}, {0, 0, -1}, {0, 1, 0}, 10, 100)
-
-gr.render(rootnode, './Generated/testscene/',
-330, 135,
---660, 270,
---2100, 900,
-{0, 15, 75}, {0, 0, -1}, {0, 1, 0}, 
---{0, 120, 0}, {0, -1, 0}, {0, 0, -1}, 
-
-50, {0.3, 0.3, 0.3}, {white_light}, 1)
+gr.render(rootnode, './Generated/testscene.png', 660, 270,
+{0, 60, 0}, {0, -1, 0}, {0, 0, -1}, 50,
+	  {0.3, 0.3, 0.3}, {white_light})

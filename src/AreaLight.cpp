@@ -16,7 +16,7 @@ list<Light *> AreaLight::getSamplePoints() {
         uniform_real_distribution<float> unif(-1 * size, 1 * size);
         float rng1 = unif(rng);
         float rng2 = unif(rng);
-        vec3 newPos = position + rng1 * up + rng1 * side;
+        vec3 newPos = position + rng1 * up + rng2 * side;
         Light *l = new Light(newPos, this->colour, this->falloff);
         samples.emplace_back(l);
         //cout << glm::to_string(l->position) << endl;
