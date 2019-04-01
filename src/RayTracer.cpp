@@ -85,6 +85,8 @@ void RayTracer::transformToWorld(glm::vec3 &coords) {
 }
 
 void RayTracer::detectVariation() {
+	std::cout << "postprocess..." << std::endl;
+
 	list<pair<int, int>> outliers;
 	int w = current_image->width();
 	int h = current_image->height();
@@ -130,12 +132,42 @@ void RayTracer::detectVariation() {
 	for (auto p : outliers) {
 		int x = p.first;
 		int y = p.second;
+		// // Red: 
+		// current_image->operator()(x, y, 0) = 1;
+		// // Green: 
+		// current_image->operator()(x, y, 1) = 0;
+		// // Blue: 
+		// current_image->operator()(x, y, 2) = 0;
+
+		// generate the ray
+		vec3 new_color(0.0f);
+		list<pair<float, float>> surroundings;
+		surroundings.emplace_back(pair<float, float>(x-0.5f, y-0.5f));
+		surroundings.emplace_back(pair<float, float>(x+0.5f, y-0.5f));
+		surroundings.emplace_back(pair<float, float>(x-0.5f, y+0.5f));
+		surroundings.emplace_back(pair<float, float>(x+0.5f, y+0.5f));
+
+		for (auto s : surroundings) {
+			float x_new = s.first;
+			float y_new = s.second;
+
+			vec3 pixel = {x_new, y_new, 0.0f};
+			transformToWorld(pixel);
+			vec3 dir = pixel - eye;
+			dir = glm::normalize(dir);
+			Ray ray = Ray(eye, dir, x_new, y_new);
+			
+			new_color += ray.getColor(root, lights, ambient, 0);
+		}
+
+		new_color /= 4;
+
 		// Red: 
-		current_image->operator()(x, y, 0) = 1;
+		current_image->operator()(x, y, 0) = (double)(new_color.x);
 		// Green: 
-		current_image->operator()(x, y, 1) = 0;
+		current_image->operator()(x, y, 1) = (double)(new_color.y);
 		// Blue: 
-		current_image->operator()(x, y, 2) = 0;
+		current_image->operator()(x, y, 2) = (double)(new_color.z);
 	}
 }
 
