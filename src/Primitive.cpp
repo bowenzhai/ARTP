@@ -225,6 +225,16 @@ bool Torus::beHitBy(glm::vec3 orig, glm::vec3 dir, float &t, glm::vec3 &N, float
             vec3 k = m_pos + m_radius * glm::normalize(delta - glm::dot(up, delta) * up);
 
             N_local = glm::normalize(p_local - k);
+
+            if (intersect_unit_torus) {
+                u = 0.5 + atan2(p_local.z, p_local.x) / (2 * M_PI);
+                v = 0.5 + atan2(p_local.y, (pow((pow(p_local.x, 2) + pow(p_local.z, 2)), 0.5) - m_radius)) / (2 * M_PI);
+            
+                if (u < 0) u = 0;
+                if (v < 0) v = 0;
+                if (u > 1) u = 1;
+                if (v > 1) v = 1;
+            }
         }
     }
     if (intersect_unit_torus) {
@@ -352,14 +362,14 @@ bool NonhierBox::beHitBy(glm::vec3 orig, glm::vec3 dir, float &t, glm::vec3 &N, 
     } else if (N == vec3(0, 1, 0)) {
         // up, same y
         vec3 ref(0, 1, 0);
-        v = abs(hit.z - ref.z);
         u = abs(hit.x - ref.x);
+        v = abs(hit.z - ref.z);
 
     } else if (N == vec3(0, -1, 0)) {
         // bottom, same y
         vec3 ref(0, 0, 1);
-        v = abs(hit.z - ref.z);
         u = abs(hit.x - ref.x);
+        v = abs(hit.z - ref.z);
 
     } else if (N == vec3(1, 0, 0)) {
         // right, same x

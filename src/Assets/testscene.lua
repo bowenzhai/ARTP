@@ -8,14 +8,17 @@ yellow = gr.phong_material({253/255, 188/255, 98/255}, {0.1, 0.1, 0.1}, 10)
 grey_r = gr.reflective_material({0.15, 0.18, 0.25}, 0.1, 0)
 blue_r = gr.reflective_material({0.25, 0.95, 0.95}, 0.5, 0)
 
-blue_ra = gr.refractive_material({0.25, 0.95, 0.95}, 1.3, 0)
+blue_ra = gr.refractive_material({0.25, 0.95, 0.95}, 1.0, 0)
 transparent = gr.refractive_material({120/255, 120/255, 140/255}, 1.3, 0)
 
+awesome = gr.textured_material('./Assets/Textures/awesomeface.png', {0.1, 0.1, 0.1}, 10, {1, 1})
 factory_iron = gr.textured_material('./Assets/Textures/factory_iron.png', {0.1, 0.1, 0.1}, 10, {1, 1})
 tunnel_ciel = gr.textured_material('./Assets/Textures/tunnel_ciel.png', {0.1, 0.1, 0.1}, 10, {4, 4})
+tunnel_ciel2 = gr.textured_material('./Assets/Textures/tunnel_ciel.png', {0.1, 0.1, 0.1}, 10, {1, 1})
 build_iron = gr.textured_material('./Assets/Textures/build_iron.png', {0.1, 0.1, 0.1}, 10, {4, 1})
 metal_bridge = gr.textured_material('./Assets/Textures/metal_bridge.png', {0.1, 0.1, 0.1}, 10, {1, 1})
 dark_metal = gr.textured_material('./Assets/Textures/dark_metal.png', {0.1, 0.1, 0.1}, 10, {1, 5})
+factory_window = gr.textured_material('./Assets/Textures/factory_window.png', {0.1, 0.1, 0.1}, 10, {1, 1})
 
 -- floor
 floor = gr.cube('floor')
@@ -73,14 +76,14 @@ rootnode:add_child(wall3)
 --cieling
 cieling = gr.cube('cieling')
 cieling:translate(-0.5, -0.5, -0.5)
-cieling:set_material(tunnel_ciel)
+cieling:set_material(factory_window)
 cieling:scale(100, 1, 100)
 cieling:translate(0, 50, 0)
 rootnode:add_child(cieling)
 
 --center pillar
 pillar_bottom_torus = gr.torus('pillar_bottom_torus', 0.2)
-pillar_bottom_torus:set_material(brown)
+pillar_bottom_torus:set_material(factory_window)
 pillar_bottom_torus:scale(10, 10, 10)
 pillar_bottom_torus:translate(0, 1, 0)
 rootnode:add_child(pillar_bottom_torus)
@@ -91,13 +94,13 @@ pillar_bottom_cylinder:scale(8, 10, 8)
 rootnode:add_child(pillar_bottom_cylinder)
 
 pillar_middle_torus = gr.torus('pillar_middle_torus', 0.2)
-pillar_middle_torus:set_material(brown)
+pillar_middle_torus:set_material(factory_window)
 pillar_middle_torus:scale(10, 10, 10)
 pillar_middle_torus:translate(0, 12, 0)
 rootnode:add_child(pillar_middle_torus)
 
 pillar_middle_cylinder = gr.cylinder('pillar_middle_cylinder')
-pillar_middle_cylinder:set_material(brown)
+pillar_middle_cylinder:set_material(build_iron)
 pillar_middle_cylinder:scale(10, 2, 10)
 pillar_middle_cylinder:translate(0, 14, 0)
 rootnode:add_child(pillar_middle_cylinder)
@@ -115,7 +118,7 @@ pillar_middle_cylinder_glass:translate(0, 16, 0)
 rootnode:add_child(pillar_middle_cylinder_glass)
 
 pillar_top_torus = gr.torus('pillar_top_torus', 0.2)
-pillar_top_torus:set_material(brown)
+pillar_top_torus:set_material(factory_window)
 pillar_top_torus:scale(10, 10, 10)
 pillar_top_torus:translate(0, 40, 0)
 rootnode:add_child(pillar_top_torus)
@@ -134,25 +137,25 @@ rootnode:add_child(pillar_top_torus_light)
 
 --surrounding pillars
 pillar_surrounding_1 = gr.cylinder('pillar_surrounding_1')
-pillar_surrounding_1:set_material(dark_metal)
+pillar_surrounding_1:set_material(tunnel_ciel2)
 pillar_surrounding_1:scale(1.2, 52, 1.2)
 pillar_surrounding_1:translate(10, 0, 10)
 rootnode:add_child(pillar_surrounding_1)
 
 pillar_surrounding_2 = gr.cylinder('pillar_surrounding_2')
-pillar_surrounding_2:set_material(dark_metal)
+pillar_surrounding_2:set_material(tunnel_ciel2)
 pillar_surrounding_2:scale(1.2, 52, 1.2)
 pillar_surrounding_2:translate(10, 0, -10)
 rootnode:add_child(pillar_surrounding_2)
 
 pillar_surrounding_3 = gr.cylinder('pillar_surrounding_3')
-pillar_surrounding_3:set_material(dark_metal)
+pillar_surrounding_3:set_material(tunnel_ciel2)
 pillar_surrounding_3:scale(1.2, 52, 1.2)
 pillar_surrounding_3:translate(-10, 0, 10)
 rootnode:add_child(pillar_surrounding_3)
 
 pillar_surrounding_4 = gr.cylinder('pillar_surrounding_4')
-pillar_surrounding_4:set_material(dark_metal)
+pillar_surrounding_4:set_material(tunnel_ciel2)
 pillar_surrounding_4:scale(1.2, 52, 1.2)
 pillar_surrounding_4:translate(-10, 0, -10)
 rootnode:add_child(pillar_surrounding_4)
@@ -260,7 +263,7 @@ tube_8:translate(-25, 0, -25)
 rootnode:add_child(tube_8)
 
 --[[dark samus begin]]
---[[
+
 -- body
 darksamus = gr.node('darksamus')
 darksamus:rotate('y', 45)
@@ -613,7 +616,7 @@ right_cannon_2:set_material(blue)
 right_cannon_2:scale(0.1, 1.2, 0.9)
 right_cannon_2:translate(-0.2, -0.9, 0.0)
 right_elbow_joint:add_child(right_cannon_2)
-]]
+
 --[[dark samus end]]
 
 --darksamus:animate(0, 24, 'translate', {0, 10, 0}, 'ease-in-out')
@@ -631,7 +634,7 @@ gr.render(rootnode, './Generated/testscene/',
 {0, 15, 75}, {0, 0, -1}, {0, 1, 0}, 
 --{0, 120, 0}, {0, -1, 0}, {0, 0, -1}, 
 
-50, {0.3, 0.3, 0.3}, {white_light}, 1, 
+50, {0.3, 0.3, 0.3}, {white_area_light}, 1, 
 --0.1
-1
+0.5
 )
