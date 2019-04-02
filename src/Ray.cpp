@@ -14,7 +14,7 @@ vec3 Ray::genBG() {
     color.z = ((float)y / (float)512);
     int random = rand() % 100;
     if (random < 1) {
-        color = vec3(1.0f, 1.0f, 1.0f);
+        //color = vec3(1.0f, 1.0f, 1.0f);
     }
 	return color;
 }

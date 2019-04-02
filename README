@@ -1,0 +1,43 @@
+## Compilation
+Used usual method for compilation
+Tested on gl43.student.cs
+
+## Manual
+### How to run
+in the root folder:
+premake4 gmake
+make
+cd src
+premake4 gmake
+make
+
+###Objectives
+Objective pictures are in src/Generated/Objectives
+1. Support ray tracing for extra primitives (Cylinder, Torus) 
+
+2. Refraction using Snell’s law 
+
+3. Glossy refraction averaging perturbance of the refracted ray 
+
+4. Reflection using Snell’s law 
+
+5. Glossy reflection by averaging perturbance of the surface normal 
+
+6. Soft shadows by sending multiple shadow rays 
+
+7. Texture Mapping is added to certain surfaces 
+
+8. Super sampling is used for anti-aliasing 
+
+9. Keyframe animation using Bezier curves is used to animate characters 
+
+10. Render a final scene that showcases objectives 
+
+## stupid mistakes I made (for own record)
+1. Set glm matrix manually, but glm matricies are aligned differently
+2. forgetting to normalize directions
+3. using .length() instead of glm length
+4. unsigned int underflow
+5. setting pixel color then comparing
+6. not paying attention to data type and used int
+7. animation transformations come -first-

@@ -7,7 +7,7 @@ using namespace glm;
 #include <iostream>
 #include <glm/ext.hpp>
 
-vec3 Animation::bezierInterpolation(vec3 start, vec3 end, float t, Transition kind) {
+vec3 Animation::bezierInterpolation(vec3 start, vec3 end, float alpha, Transition kind) {
     vec2 P0(0.0f, 0.0f);
     vec2 P1, P2;
     vec2 P3(1.0f, 1.0f);
@@ -24,7 +24,14 @@ vec3 Animation::bezierInterpolation(vec3 start, vec3 end, float t, Transition ki
         P1 = vec2(0.42f, 0.0f);
         P2 = vec2(0.58f, 1.0f);
     }
-    vec2 p = pow((1-t), 3) * P0 + 3 * t * pow((1-t), 2) *P1 + 3 * pow(t, 2) * (1-t) * P2 + pow(t, 3) * P3;
+
+    vec2 p(0, 0);
+    float t = 0.0f;
+    while (p.x < alpha) {
+        p = pow((1-t), 3) * P0 + 3 * t * pow((1-t), 2) *P1 + 3 * pow(t, 2) * (1-t) * P2 + pow(t, 3) * P3;
+        t += 0.01;
+    }
+    
     return glm::lerp(start, end, p.y);
 }
 
