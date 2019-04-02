@@ -25,13 +25,17 @@ SceneNode *RayTracer::flattenScene(SceneNode * new_root, SceneNode * node) {
 	for (Animation * a : anim) {
 		if (curr_frame > a->m_startframe && curr_frame <= (a->m_startframe + a->m_duration)) {
 			mat4 intermediate = a->generateIntermetiate(curr_frame);
-			new_matrix = new_matrix * intermediate;
-			if (curr_frame == (a->m_startframe + a->m_duration)) {
-				// save the position
-				node->trans = intermediate * node->trans;
+			if (a->m_transform == "scale") {
+				node->anim_scale = intermediate * node->anim_scale;
+			} else if (a->m_transform == "rotate") {
+				node->anim_rotate = intermediate * node->anim_rotate;
+			} else if (a->m_transform == "translate") {
+				node->anim_translate = intermediate * node->anim_translate;
 			}
 		}
 	}
+
+	new_matrix = new_matrix * node->anim_translate * node->anim_rotate;
 
     //cout << glm::to_string(new_matrix) << endl;
 	matrix_stack.push(new_matrix);

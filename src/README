@@ -11,3 +11,4 @@ Tested on gl43.student.cs
 4. unsigned int underflow
 5. setting pixel color then comparing
 6. not paying attention to data type and used int
+7. animation transformations come -first-

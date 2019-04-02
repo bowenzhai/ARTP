@@ -36,10 +36,11 @@ mat4 Animation::generateIntermetiate(int frame) {
     mat4 intermediate;
     vec3 intermediate_amount;
     float alpha = (float)(frame - m_startframe) / (float)m_duration;
+    float alpha_prev = (float)(frame - 1 - m_startframe) / (float)m_duration;
     if (m_transition == Transition::Linear) {
-        intermediate_amount = glm::lerp(start, m_amount, alpha);
+        intermediate_amount = glm::lerp(start, m_amount, alpha) - glm::lerp(start, m_amount, alpha_prev);
     } else {
-        intermediate_amount = bezierInterpolation(start, m_amount, alpha, m_transition);
+        intermediate_amount = bezierInterpolation(start, m_amount, alpha, m_transition) - bezierInterpolation(start, m_amount, alpha_prev, m_transition);
     }
 
     if (m_transform == "translate") {
