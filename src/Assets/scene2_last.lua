@@ -1,5 +1,5 @@
 rootnode = gr.node('root')
-rootnode:rotate('y', 30)
+rootnode:rotate('y', 20)
 
 grey = gr.phong_material({0.15, 0.18, 0.25}, {0.1, 0.1, 0.1}, 10)
 blue = gr.phong_material({0.25, 0.95, 0.95}, {0.1, 0.1, 0.1}, 10)
@@ -275,10 +275,10 @@ tube_8:translate(-25, 0, -25)
 rootnode:add_child(tube_8)
 
 --[[dark samus begin]]
---[[
 darksamus = gr.node('darksamus')
-darksamus:rotate('y', 45)
-darksamus:translate(-17, 6, 20)
+darksamus:rotate('y', -20)
+darksamus:rotate('x', 10)
+darksamus:translate(15, 7, 7)
 rootnode:add_child(darksamus)
 
 -- body
@@ -628,15 +628,15 @@ right_cannon_2:set_material(blue)
 right_cannon_2:scale(0.1, 1.2, 0.9)
 right_cannon_2:translate(-0.2, -0.9, 0.0)
 right_elbow_joint:add_child(right_cannon_2)
-]]
+
 --[[dark samus end]]
 
 
 --[[samus begin]]
+
 samus = gr.node('samus')
-samus:rotate('y', 180)
-samus:translate(-12, 4, 25)
-samus:translate(0, 14, 0)
+samus:rotate('y', 140)
+samus:translate(-12, 6, 15)
 rootnode:add_child(samus)
 
 -- body
@@ -1001,32 +1001,47 @@ samus_right_cannon_1:set_material(yellow)
 samus_right_cannon_1:scale(0.45, 0.2, 0.45)
 samus_right_cannon_1:translate(0.0, -1.5, 0.0)
 samus_right_elbow_joint:add_child(samus_right_cannon_1)
+
 --[[samus end]]
 
-samus_right_leg_joint:rotate('x', -13)
-samus_right_leg_joint:rotate('y', -33)
-samus_right_knee_joint:rotate('x', 117)
-samus_left_leg_joint:rotate('x', -87)
-samus_left_leg_joint:rotate('y', 20)
-samus_left_knee_joint:rotate('x', 74)
-samus_shoulder_joint:rotate('y', 20)
-samus_left_elbow_joint:rotate('x', -94)
-samus_right_arm_joint:rotate('y', -31)
-samus_right_elbow_joint:rotate('x', -81)
-samus_hip_joint:rotate('x', -22)
-samus_torso_joint:rotate('x', 30)
-samus_right_arm_joint:rotate('x', -39)
+left_arm_joint:rotate('x', -34)
+left_arm_joint:rotate('y', 20)
+left_elbow_joint:rotate('x', -75)
+left_elbow_joint:rotate('y', -91)
+right_arm_joint:rotate('x', -9)
+right_arm_joint:rotate('y', -19)
+right_elbow_joint:rotate('y', 37)
+right_elbow_joint:rotate('x', -37)
+hip_joint:rotate('x', -24)
+left_leg_joint:rotate('y', 18)
+left_knee_joint:rotate('x', 57)
+right_leg_joint:rotate('x', -21)
+right_knee_joint:rotate('x', 49)
+head_joint:rotate('y', -10)
 
-samus:animate(0, 12, 'translate', {0, -14, 0}, 'ease-in')
-samus:animate(0, 3, 'rotate', {90, 0, 0}, 'linear')
-samus:animate(3, 3, 'rotate', {90, 0, 0}, 'linear')
-samus:animate(6, 3, 'rotate', {90, 0, 0}, 'linear')
-samus:animate(9, 3, 'rotate', {90, 0, 0}, 'linear')
-rootnode:animate(12, 1, 'translate', {0, -1, 0}, 'linear')
-rootnode:animate(13, 1, 'translate', {0, 1, 0}, 'linear')
-rootnode:animate(14, 6, 'translate', {4, 0, -8}, 'ease-out')
-samus_head_joint:animate(16, 4, 'rotate', {-30, 0, 0}, 'linear')
-samus_head_joint:animate(17, 3, 'rotate', {0, -20, 0}, 'linear')
+samus_left_arm_joint:rotate('x', -43)
+samus_left_arm_joint:rotate('y', -25)
+samus_left_elbow_joint:rotate('x', -43)
+samus_left_elbow_joint:rotate('y', -39)
+samus_right_arm_joint:rotate('x', -38)
+samus_right_arm_joint:rotate('y', 48)
+samus_right_elbow_joint:rotate('x', -37)
+samus_left_leg_joint:rotate('x', 16)
+samus_right_leg_joint:rotate('x', -20)
+samus_right_knee_joint:rotate('x', 23)
+samus_left_ankle_joint:rotate('x', -18)
+samus_right_ankle_joint:rotate('x', -12)
+
+rootnode:rotate('y', 50)
+rootnode:translate(0, -5, 0)
+darksamus:rotate('x', 10)
+head_joint:rotate('y', -20)
+darksamus:translate(0, 0, 10)
+
+-- rootnode:animate(5, 14, 'rotate', {0, 60, 0}, 'ease-in')
+-- darksamus:animate(3, 3, 'rotate', {10, 0, 0}, 'linear')
+-- head_joint:animate(3, 3, 'rotate', {0, -20, 0}, 'linear')
+-- darksamus:animate(6, 14, 'translate', {0, 0, 10}, 'ease-in')
 
 white_light = gr.light({2, 12, 30}, {0.9, 0.9, 0.9}, {1, 0, 0})
 white_area_light = gr.area_light({2, 12, 30}, {0.9, 0.9, 0.9}, {1, 0, 0}, {0, 0, -1}, {0, 1, 0}, 10, 100)
@@ -1036,14 +1051,14 @@ blue_light_2 = gr.light({0, 25, -12.5}, {0.25, 0.95, 0.95}, {1, 0, 0})
 blue_light_3 = gr.light({12.5, 25, 0}, {0.25, 0.95, 0.95}, {1, 0, 0})
 blue_light_4 = gr.light({-12.5, 25, 0}, {0.25, 0.95, 0.95}, {1, 0, 0})
 
-gr.render(rootnode, './Generated/scene1/',
+gr.render(rootnode, './Generated/scene2_last/',
 330, 135,
 --660, 270,
 --2100, 900,
-{0, 5, 15}, {0, 0, 1}, {0, 1, 0}, 
+{10, 2, 27}, {0, 0, -1}, {0, 1, 0}, 
 --{0, 120, 0}, {0, -1, 0}, {0, 0, -1}, 
 
-50, {0.3, 0.3, 0.3}, {blue_light_1}, 21, 
+50, {0.3, 0.3, 0.3}, {blue_light_1, blue_light_3}, 1, 
 --0.1
 1
 )
