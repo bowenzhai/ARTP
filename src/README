@@ -3,6 +3,12 @@ Used usual method for compilation
 Tested on gl43.student.cs
 
 ## Manual
+in the root folder:
+premake4 gmake
+make
+cd src
+premake4 gmake
+make
 
 ## stupid mistakes
 1. Set glm matrix manually, but glm matricies are aligned differently

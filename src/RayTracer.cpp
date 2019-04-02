@@ -35,7 +35,14 @@ SceneNode *RayTracer::flattenScene(SceneNode * new_root, SceneNode * node) {
 		}
 	}
 
-	new_matrix = new_matrix * node->anim_translate * node->anim_rotate;
+	new_matrix = new_matrix * node->anim_translate * node->anim_rotate * node->anim_scale;
+
+	if (node->m_name == "root") {
+		for(Light * light : lights) {
+			vec4 p(light->orig_pos, 1.0f); 
+			light->position = (vec3)(new_matrix * p);
+		}
+	}
 
     //cout << glm::to_string(new_matrix) << endl;
 	matrix_stack.push(new_matrix);
