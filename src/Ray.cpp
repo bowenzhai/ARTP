@@ -70,7 +70,7 @@ Ray Ray::perturb(const vec3 &p, const vec3 &dir, const vec3 &N) {
     cout << rotationAxis.z * invs  << endl;
 }
 
-GeometryNode *Ray::hit(SceneNode * root, float &t, vec3 &N)  {
+GeometryNode *Ray::hit(SceneNode * root, float &t, vec3 &N, float &u, float &v)  {
     float t_min = INT_MAX;
     GeometryNode *hit_object = nullptr;
 
@@ -79,7 +79,7 @@ GeometryNode *Ray::hit(SceneNode * root, float &t, vec3 &N)  {
             GeometryNode *geometryNode = static_cast<GeometryNode *>(child);
             float t_curr;
             vec3 N_curr;
-            if (geometryNode->m_primitive->beHitBy(orig, dir, t_curr, N_curr) && t_curr < t_min) {
+            if (geometryNode->m_primitive->beHitBy(orig, dir, t_curr, N_curr, u, v) && t_curr < t_min) {
                 hit_object = geometryNode;
                 t_min = t_curr;
                 t = t_min;
@@ -100,11 +100,13 @@ vec3 Ray::getColor(SceneNode * root, list<Light *> lights, vec3 & ambient, int m
 	vec3 N;
 	vec3 p;
 	float t;
+    float u;
+    float v;
     // debug a pixel
     // if (x == 10 && y == 6) {
     //     cout << "for debug" << endl;
     // }
-    GeometryNode *hit_object = hit(root, t, N);
+    GeometryNode *hit_object = hit(root, t, N, u, v);
     // if (x == 10 && y == 6) {
     //     cout << glm::to_string(N) << endl;
     // }
@@ -113,6 +115,7 @@ vec3 Ray::getColor(SceneNode * root, list<Light *> lights, vec3 & ambient, int m
         PhongMaterial *phongMaterial;
         ReflectiveMaterial *reflectiveMaterial;
         RefractiveMaterial *refractiveMaterial;
+        TexturedMaterial *texturedMaterial;
 
         if (type == MaterialType::PhongMaterial) {
             phongMaterial = static_cast<PhongMaterial *>(hit_object->m_material);
@@ -124,6 +127,14 @@ vec3 Ray::getColor(SceneNode * root, list<Light *> lights, vec3 & ambient, int m
         } else if (type == MaterialType::RefractiveMaterial) {
             refractiveMaterial = static_cast<RefractiveMaterial *>(hit_object->m_material);
             kd = refractiveMaterial->m_kd;
+        } else if (type == MaterialType::TexturedMaterial) {
+            texturedMaterial = static_cast<TexturedMaterial *>(hit_object->m_material);
+            // cursed
+            //u = u * 3 - (int)u;
+            //v = v * 3 - (int)v;
+            float u_tile = fmod(u * texturedMaterial->m_tile.x, 1);
+            float v_tile = fmod(v * texturedMaterial->m_tile.y, 1);
+            kd = texturedMaterial->getMaterialColor(u_tile, v_tile);
         }
         
         color = kd * ambient;
@@ -132,6 +143,8 @@ vec3 Ray::getColor(SceneNode * root, list<Light *> lights, vec3 & ambient, int m
         for (auto light : lights) {
             vec3 N_reverse;
             float t_reverse;
+            float u_reverse;
+            float v_reverse;
             vec3 color_intermediate;
             float light_ratio = 1.0f;
             //shadow
@@ -144,7 +157,7 @@ vec3 Ray::getColor(SceneNode * root, list<Light *> lights, vec3 & ambient, int m
 
                     Ray reverse_sample = Ray(p + N * BIAS, glm::normalize(sample->position - p), x, y);
                 
-                    if (reverse_sample.hit(root, t_reverse, N_reverse) != nullptr && t_reverse < glm::length(sample->position - p)) {
+                    if (reverse_sample.hit(root, t_reverse, N_reverse, u_reverse, v_reverse) != nullptr && t_reverse < glm::length(sample->position - p)) {
                         --not_hit;
                     }
                 }
@@ -155,7 +168,7 @@ vec3 Ray::getColor(SceneNode * root, list<Light *> lights, vec3 & ambient, int m
             } else {
                 Ray reverse_light = Ray(p + N * BIAS, glm::normalize(light->position - p), x, y);
                 
-                if (reverse_light.hit(root, t_reverse, N_reverse) != nullptr && t_reverse < glm::length(light->position - p)) {
+                if (reverse_light.hit(root, t_reverse, N_reverse, u_reverse, v_reverse) != nullptr && t_reverse < glm::length(light->position - p)) {
                     // // reflective
                     // if (type == MaterialType::ReflectiveMaterial && maxHits < MAX_HITS) {
                     //     Ray view_reflected = ggReflection(p  + N * BIAS, dir, N, x, y);

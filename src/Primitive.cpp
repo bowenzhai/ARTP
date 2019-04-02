@@ -16,7 +16,7 @@ Primitive::~Primitive()
 {
 }
 
-bool Primitive::beHitBy(glm::vec3 orig, glm::vec3 dir, float &t, vec3 &N) const{
+bool Primitive::beHitBy(glm::vec3 orig, glm::vec3 dir, float &t, vec3 &N, float &u, float &v) const{
     return false;
 }
 
@@ -33,14 +33,14 @@ Sphere::~Sphere()
 {
 }
 
-bool Sphere::beHitBy(glm::vec3 orig, glm::vec3 dir, float &t, glm::vec3 &N) const{
+bool Sphere::beHitBy(glm::vec3 orig, glm::vec3 dir, float &t, glm::vec3 &N, float &u, float &v) const{
     vec3 orig_local = orig;
     vec3 dir_local = dir;
     transformRayToLocal(orig_local, dir_local);
     NonhierSphere nhs(vec3(0.0f), 1.0f);
     float t_local;
     vec3 N_local;
-    if (nhs.beHitBy(orig_local, dir_local, t_local, N_local)) {
+    if (nhs.beHitBy(orig_local, dir_local, t_local, N_local, u, v)) {
         vec3 p_local = orig_local + t_local * dir_local;
         vec3 p = (vec3)(curr_transform * vec4(p_local, 1.0f));
         t = glm::length(p - orig);
@@ -55,14 +55,14 @@ Cube::~Cube()
 {
 }
 
-bool Cube::beHitBy(glm::vec3 orig, glm::vec3 dir, float &t, glm::vec3 &N) const{
+bool Cube::beHitBy(glm::vec3 orig, glm::vec3 dir, float &t, glm::vec3 &N, float &u, float &v) const{
     vec3 orig_local = orig;
     vec3 dir_local = dir;
     transformRayToLocal(orig_local, dir_local);
     NonhierBox nhb(vec3(0.0f), 1.0f);
     float t_local;
     vec3 N_local;
-    if (nhb.beHitBy(orig_local, dir_local, t_local, N_local)) {
+    if (nhb.beHitBy(orig_local, dir_local, t_local, N_local, u, v)) {
         vec3 p_local = orig_local + t_local * dir_local;
         vec3 p = (vec3)(curr_transform * vec4(p_local, 1.0f));
         t = glm::length(p - orig);
@@ -77,7 +77,7 @@ Cylinder::~Cylinder()
 {
 }
 
-bool Cylinder::beHitBy(glm::vec3 orig, glm::vec3 dir, float &t, glm::vec3 &N) const {
+bool Cylinder::beHitBy(glm::vec3 orig, glm::vec3 dir, float &t, glm::vec3 &N, float &u, float &v) const {
     vec3 orig_local = orig;
     vec3 dir_local = dir;
     transformRayToLocal(orig_local, dir_local);
@@ -132,6 +132,21 @@ bool Cylinder::beHitBy(glm::vec3 orig, glm::vec3 dir, float &t, glm::vec3 &N) co
             p_local = orig_local + t_local * dir_local;
             vec3 rel = m_pos + vec3(0, p_local.y, 0);
             N_local = glm::normalize(p_local - rel);
+
+            // uv calculation
+            if (intersect_unit_cylinder) {
+                float theta = atan(p_local.x / p_local.z) + M_PI / 2;
+                if (p_local.x < 0) {
+                    theta += M_PI;
+                }
+                u = theta / (M_PI * 2);
+                v = 1 - p_local.y;
+
+                if (u < 0) u = 0;
+                if (v < 0) v = 0;
+                if (u > 1) u = 1;
+                if (v > 1) v = 1;
+            }
         }
     }
     if (intersect_unit_cylinder) {
@@ -148,7 +163,7 @@ Torus::~Torus()
 {
 }
 
-bool Torus::beHitBy(glm::vec3 orig, glm::vec3 dir, float &t, glm::vec3 &N) const {
+bool Torus::beHitBy(glm::vec3 orig, glm::vec3 dir, float &t, glm::vec3 &N, float &u, float &v) const {
     vec3 orig_local = orig;
     vec3 dir_local = dir;
     transformRayToLocal(orig_local, dir_local);
@@ -226,7 +241,7 @@ NonhierSphere::~NonhierSphere()
 {
 }
 
-bool NonhierSphere::beHitBy(glm::vec3 orig, glm::vec3 dir, float &t, vec3 &N) const{
+bool NonhierSphere::beHitBy(glm::vec3 orig, glm::vec3 dir, float &t, vec3 &N, float &u, float &v) const{
     double roots[2];
     vec3 a_minus_c = orig - m_pos;
 
@@ -260,7 +275,7 @@ NonhierBox::~NonhierBox()
 {
 }
 
-bool NonhierBox::beHitBy(glm::vec3 orig, glm::vec3 dir, float &t, glm::vec3 &N) const{
+bool NonhierBox::beHitBy(glm::vec3 orig, glm::vec3 dir, float &t, glm::vec3 &N, float &u, float&v) const{
     vec3 bounds[2];
     bounds[0] = m_pos;
     bounds[1] = vec3(m_pos.x + m_size, m_pos.y + m_size, m_pos.z + m_size);
@@ -320,6 +335,50 @@ bool NonhierBox::beHitBy(glm::vec3 orig, glm::vec3 dir, float &t, glm::vec3 &N) 
     vec3 divisor = vec3(abs(min.x - max.x) / 2, abs(min.y - max.y) / 2, abs(min.z - max.z) / 2);
     N = vec3((int)(p.x / divisor.x * bias), (int)(p.y / divisor.y * bias), (int)(p.z / divisor.z * bias));
     N = glm::normalize(N);
+
+    // uv calculation
+    if (N == vec3(0, 0, 1)) {
+        // front, same z
+        vec3 ref(0, 1, 1);
+        u = abs(hit.x - ref.x);
+        v = abs(hit.y - ref.y);
+
+    } else if (N == vec3(0, 0, -1)) {
+        //back, same z
+        vec3 ref(0, 0, 0);
+        u = abs(hit.x - ref.x);
+        v = abs(hit.y - ref.y);
+
+    } else if (N == vec3(0, 1, 0)) {
+        // up, same y
+        vec3 ref(0, 1, 0);
+        v = abs(hit.z - ref.z);
+        u = abs(hit.x - ref.x);
+
+    } else if (N == vec3(0, -1, 0)) {
+        // bottom, same y
+        vec3 ref(0, 0, 1);
+        v = abs(hit.z - ref.z);
+        u = abs(hit.x - ref.x);
+
+    } else if (N == vec3(1, 0, 0)) {
+        // right, same x
+        vec3 ref(1, 1, 1);
+        u = abs(hit.z - ref.z);
+        v = abs(hit.y - ref.y);
+
+    } else if (N == vec3(-1, 0, 0)) {
+        // left, same x
+        vec3 ref(0, 1, 0);
+        u = abs(hit.z - ref.z);
+        v = abs(hit.y - ref.y);
+
+    } 
+
+    if (u < 0) u = 0;
+    if (v < 0) v = 0;
+    if (u > 1) u = 1;
+    if (v > 1) v = 1;
 
     return true;
 }

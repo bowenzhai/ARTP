@@ -7,7 +7,7 @@
 class Primitive {
 public:
   virtual ~Primitive();
-  virtual bool beHitBy(glm::vec3 orig, glm::vec3 dir, float &t, glm::vec3 &N) const;
+  virtual bool beHitBy(glm::vec3 orig, glm::vec3 dir, float &t, glm::vec3 &N, float &u, float &v) const;
   void transformRayToLocal(glm::vec3 &orig, glm::vec3 &dir) const;
   glm::mat4 curr_transform;
 };
@@ -15,26 +15,26 @@ public:
 class Sphere : public Primitive {
 public:
   virtual ~Sphere();
-  virtual bool beHitBy(glm::vec3 orig, glm::vec3 dir, float &t, glm::vec3 &N) const override;
+  virtual bool beHitBy(glm::vec3 orig, glm::vec3 dir, float &t, glm::vec3 &N, float &u, float &v) const override;
 };
 
 class Cube : public Primitive {
 public:
   virtual ~Cube();
-  virtual bool beHitBy(glm::vec3 orig, glm::vec3 dir, float &t, glm::vec3 &N) const override;
+  virtual bool beHitBy(glm::vec3 orig, glm::vec3 dir, float &t, glm::vec3 &N, float &u, float &v) const override;
 };
 
 class Cylinder : public Primitive {
 public:
   virtual ~Cylinder();
-  virtual bool beHitBy(glm::vec3 orig, glm::vec3 dir, float &t, glm::vec3 &N) const override;
+  virtual bool beHitBy(glm::vec3 orig, glm::vec3 dir, float &t, glm::vec3 &N, float &u, float &v) const override;
 };
 
 class Torus : public Primitive {
 public:
   Torus(const float thickness): m_thickness(thickness) {}
   virtual ~Torus();
-  virtual bool beHitBy(glm::vec3 orig, glm::vec3 dir, float &t, glm::vec3 &N) const override;
+  virtual bool beHitBy(glm::vec3 orig, glm::vec3 dir, float &t, glm::vec3 &N, float &u, float &v) const override;
 
 private:
   float m_thickness;
@@ -47,7 +47,7 @@ public:
   {
   }
   virtual ~NonhierSphere();
-  virtual bool beHitBy(glm::vec3 orig, glm::vec3 dir, float &t, glm::vec3 &N) const override;
+  virtual bool beHitBy(glm::vec3 orig, glm::vec3 dir, float &t, glm::vec3 &N, float &u, float &v) const override;
 
 private:
   glm::vec3 m_pos;
@@ -62,7 +62,7 @@ public:
   }
   
   virtual ~NonhierBox();
-  virtual bool beHitBy(glm::vec3 orig, glm::vec3 dir, float &t, glm::vec3 &N) const override;
+  virtual bool beHitBy(glm::vec3 orig, glm::vec3 dir, float &t, glm::vec3 &N, float &u, float &v) const override;
 
 private:
   glm::vec3 m_pos;
