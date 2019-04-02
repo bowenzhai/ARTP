@@ -28,7 +28,7 @@ public:
     glm::vec3 getColor(SceneNode * root, std::list<Light *> lights, glm::vec3 & ambient, int maxHits);
     friend std::ostream& operator<<(std::ostream& out, const Ray& ray);
     glm::vec3 pointAt(float t);
-    static Ray perturb(const glm::vec3 &p, const glm::vec3 &dir, const glm::vec3 &N);
+    glm::vec3 perturb(const glm::vec3 &N, float factor);
 private:
     glm::vec3 orig;
     glm::vec3 dir;

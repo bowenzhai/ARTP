@@ -11,11 +11,11 @@ using namespace glm;
 
 vec3 Ray::genBG() {
 	vec3 color(0.0f);
-    // color.z = ((float)y / (float)512);
-    // int random = rand() % 100;
-    // if (random < 1) {
-    //     color = vec3(1.0f, 1.0f, 1.0f);
-    // }
+    color.z = ((float)y / (float)512);
+    int random = rand() % 100;
+    if (random < 1) {
+        color = vec3(1.0f, 1.0f, 1.0f);
+    }
 	return color;
 }
 
@@ -55,19 +55,18 @@ Ray *Ray::ggRefract(const vec3 &p, const vec3 &dir, const vec3 &N, float ior, in
     }
 }
 
-
-Ray Ray::perturb(const vec3 &p, const vec3 &dir, const vec3 &N) {
-    vec3 rotationAxis = glm::cross(dir, N);
-    float cosTheta = glm::dot(dir, N);
-    float s = sqrt( (1+cosTheta)*2 );
-	float invs = 1 / s;
-
-    cout << glm::to_string(dir) << endl;
-    cout << glm::to_string(N) << endl;
-
-    cout << rotationAxis.x * invs  << endl;
-    cout << rotationAxis.y * invs  << endl;
-    cout << rotationAxis.z * invs  << endl;
+vec3 Ray::perturb(const vec3 &N, float factor) {
+    random_device rd; 
+    mt19937_64 rng(rd());
+    uniform_real_distribution<float> unif(0.0f, 1.0f);
+    float x1 = unif(rng);
+    float x2 = unif(rng);
+    vec4 n4(N, 1.0f);
+    float alpha = pow(acos(1 - x1), 0.5);
+    float beta = 2 * M_PI * x2;
+    n4 = glm::rotate(n4, radians(alpha) * (factor * 10.f), vec3(0, 1, 0));
+    n4 = glm::rotate(n4, radians(beta) * (factor * 10.0f), vec3(0, 0, 1));
+    return glm::normalize(vec3(n4));
 }
 
 GeometryNode *Ray::hit(SceneNode * root, float &t, vec3 &N, float &u, float &v)  {
@@ -93,7 +92,7 @@ GeometryNode *Ray::hit(SceneNode * root, float &t, vec3 &N, float &u, float &v) 
 }    
 
 vec3 Ray::getColor(SceneNode * root, list<Light *> lights, vec3 & ambient, int maxHits) {
-    vec3 color;
+    vec3 color(0.0f);
     vec3 kd;
 	vec3 ks;
 	vec3 ke;
@@ -153,8 +152,6 @@ vec3 Ray::getColor(SceneNode * root, list<Light *> lights, vec3 & ambient, int m
                 int not_hit = areaLight->numsamples;
                 list <Light *> samplePoints = areaLight->getSamplePoints();
                 for (auto sample : samplePoints) {
-                    //cout << glm::to_string(sample->position) << endl;
-
                     Ray reverse_sample = Ray(p + N * BIAS, glm::normalize(sample->position - p), x, y);
                 
                     if (reverse_sample.hit(root, t_reverse, N_reverse, u_reverse, v_reverse) != nullptr && t_reverse < glm::length(sample->position - p)) {
@@ -162,21 +159,16 @@ vec3 Ray::getColor(SceneNode * root, list<Light *> lights, vec3 & ambient, int m
                     }
                 }
                 light_ratio = (float)not_hit / (float)areaLight->numsamples;
-                if (light_ratio != 1 && light_ratio != 0) {
-                    //cout << endl;
-                }
             } else {
+                bool outside = glm::dot(dir, N) < 0;
                 Ray reverse_light = Ray(p + N * BIAS, glm::normalize(light->position - p), x, y);
-                
-                if (reverse_light.hit(root, t_reverse, N_reverse, u_reverse, v_reverse) != nullptr && t_reverse < glm::length(light->position - p)) {
-                    // // reflective
-                    // if (type == MaterialType::ReflectiveMaterial && maxHits < MAX_HITS) {
-                    //     Ray view_reflected = ggReflection(p  + N * BIAS, dir, N, x, y);
-                    //     color_intermediate += reflectiveMaterial->m_reflectiveness * view_reflected.getColor(root, lights, ambient, maxHits + 1);
-                    // } else {
-                    //     continue;
-                    // }
-                    continue;
+                GeometryNode *reverse_hit = reverse_light.hit(root, t_reverse, N_reverse, u_reverse, v_reverse);
+                if (reverse_hit != nullptr && t_reverse < glm::length(light->position - p)) {
+                    if (type == MaterialType::RefractiveMaterial && reverse_hit == hit_object) {
+
+                    } else {
+                        continue;
+                    }
                 }
             }
 
@@ -193,15 +185,16 @@ vec3 Ray::getColor(SceneNode * root, list<Light *> lights, vec3 & ambient, int m
 
             // reflective
             if (type == MaterialType::ReflectiveMaterial && maxHits < MAX_HITS) {
-                Ray view_reflected = ggReflection(p + N * BIAS, dir, N, x, y);
-                vec3 reflected_normally_color = reflectiveMaterial->m_reflectiveness * view_reflected.getColor(root, lights, ambient, maxHits + 1);
-/*
-                Ray view_reflected_perturbed = perturb(view_reflected.orig, view_reflected.dir, N);
-                vec3 reflected_perturbed_color = reflectiveMaterial->m_reflectiveness * view_reflected_perturbed.getColor(root, lights, ambient, maxHits + 1);
-                color_intermediate += (1.0f - reflectiveMaterial->m_glossiness) * reflected_normally_color + (reflectiveMaterial->m_glossiness) * reflected_perturbed_color;
-*/
-                color_intermediate += (1.0f - reflectiveMaterial->m_glossiness) * reflected_normally_color;
-
+                if (reflectiveMaterial->m_glossiness != 0) {
+                    vec3 N_perturbed = perturb(N, reflectiveMaterial->m_glossiness);
+                    Ray view_reflected_perturbed = ggReflection(p + N_perturbed * BIAS, dir, N_perturbed, x, y);
+                    vec3 reflected_perturbed_color = reflectiveMaterial->m_reflectiveness * view_reflected_perturbed.getColor(root, lights, ambient, maxHits + 1);
+                    color_intermediate += reflected_perturbed_color;
+                } else {
+                    Ray view_reflected = ggReflection(p + N * BIAS, dir, N, x, y);
+                    vec3 reflected_normally_color = reflectiveMaterial->m_reflectiveness * view_reflected.getColor(root, lights, ambient, maxHits + 1);
+                    color_intermediate += reflected_normally_color;
+                }
             }
 
             // refractive
@@ -214,7 +207,12 @@ vec3 Ray::getColor(SceneNode * root, list<Light *> lights, vec3 & ambient, int m
                     view_refracted = ggRefract(p + 2 * N * BIAS, dir, N, refractiveMaterial->m_ior, x, y);
                 }
                 if (view_refracted != nullptr) {
-                    color_intermediate = 0.1 * color_intermediate + 0.8 * view_refracted->getColor(root, lights, ambient, maxHits + 1);
+                    if (refractiveMaterial->m_glossiness != 0) {
+                        vec3 dir_perturbed = perturb(view_refracted->dir, refractiveMaterial->m_glossiness);
+                        view_refracted->dir = dir_perturbed;
+                    }
+                    vec3 refracted_color = view_refracted->getColor(root, lights, ambient, maxHits + 1);
+                    color_intermediate = 0.1 * color_intermediate + 0.8 * refracted_color;
                 }
                 delete view_refracted;
             }
@@ -226,10 +224,6 @@ vec3 Ray::getColor(SceneNode * root, list<Light *> lights, vec3 & ambient, int m
     } else {
         color = genBG();
     }
-
-    // if (x == 10 && y == 6) {
-    //     cout << glm::to_string(color) << endl;
-    // }
 
     return color;
 }
