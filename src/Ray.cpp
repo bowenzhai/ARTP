@@ -11,11 +11,11 @@ using namespace glm;
 
 vec3 Ray::genBG() {
 	vec3 color(0.0f);
-    color.z = ((float)y / (float)512);
-    int random = rand() % 100;
-    if (random < 1) {
-        color = vec3(1.0f, 1.0f, 1.0f);
-    }
+    // color.z = ((float)y / (float)512);
+    // int random = rand() % 100;
+    // if (random < 1) {
+    //     color = vec3(1.0f, 1.0f, 1.0f);
+    // }
 	return color;
 }
 
