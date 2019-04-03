@@ -19,7 +19,7 @@ vec3 Ray::genBG() {
 	return color;
 }
 
-const int Ray::MAX_HITS = 4;
+const int Ray::MAX_HITS = 3;
 
 const float Ray::BIAS = 1e-2;
 
@@ -212,7 +212,7 @@ vec3 Ray::getColor(SceneNode * root, list<Light *> lights, vec3 & ambient, int m
                         view_refracted->dir = dir_perturbed;
                     }
                     vec3 refracted_color = view_refracted->getColor(root, lights, ambient, maxHits + 1);
-                    color_intermediate = 0.1 * color_intermediate + 0.8 * refracted_color;
+                    color_intermediate = 0.1 * color_intermediate + 0.3 * refracted_color;
                 }
                 delete view_refracted;
             }

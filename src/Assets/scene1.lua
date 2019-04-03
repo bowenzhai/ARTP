@@ -10,11 +10,18 @@ green = gr.phong_material({100/255, 220/255, 0/255}, {0.1, 0.1, 0.1}, 10)
 dark_green = gr.phong_material({50/255, 100/255, 0/255}, {0.1, 0.1, 0.1}, 10)
 black = gr.phong_material({40/255, 40/255, 40/255}, {0.1, 0.1, 0.1}, 10)
 
+--ds
 grey_r = gr.reflective_material({0.15, 0.18, 0.25}, 0.1, 0)
 blue_r = gr.reflective_material({0.25, 0.95, 0.95}, 0.5, 0)
 
-blue_ra = gr.refractive_material({0.25, 0.95, 0.95}, 1.0, 0)
-transparent = gr.refractive_material({120/255, 120/255, 140/255}, 1.3, 0)
+--samus colors
+green_r = gr.reflective_material({100/255, 220/255, 0/255}, 0.8, 0)
+red_r = gr.reflective_material({200/255, 50/255, 30/255}, 0.1, 0.3)
+orange_r = gr.reflective_material({220/255, 140/255, 0/255}, 0.1, 0.3)
+dark_green_r = gr.reflective_material({50/255, 100/255, 0/255}, 0.1, 0.3)
+
+blue_ra = gr.refractive_material({0.25, 0.95, 0.95}, 1.3, 0.5)
+transparent = gr.refractive_material({120/255, 120/255, 140/255}, 1.3, 0.5)
 
 awesome = gr.textured_material('./Assets/Textures/awesomeface.png', {0.1, 0.1, 0.1}, 10, {1, 1})
 factory_iron = gr.textured_material('./Assets/Textures/factory_iron.png', {0.1, 0.1, 0.1}, 10, {1, 1})
@@ -645,7 +652,7 @@ samus:add_child(samus_torso_joint)
 
 samus_torso = gr.sphere('samus_torso')
 samus_torso:scale(1.2, 1.0, 0.8)
-samus_torso:set_material(orange)
+samus_torso:set_material(orange_r)
 samus_torso_joint:add_child(samus_torso)
 
 samus_shoulder_joint_pre = gr.node('samus_shoulder_joint_pre')
@@ -657,7 +664,7 @@ samus_shoulder_joint_pre:add_child(samus_shoulder_joint)
 
 samus_shoulder = gr.sphere('samus_shoulder')
 samus_shoulder:scale(1.5, 1.0, 1.0)
-samus_shoulder:set_material(red)
+samus_shoulder:set_material(red_r)
 samus_shoulder_joint:add_child(samus_shoulder)
 
 samus_chest_1 = gr.cube('samus_chest_1')
@@ -665,7 +672,7 @@ samus_chest_1:translate(-0.5, -0.5, -0.5)
 samus_chest_1:scale(0.6, 0.15, 0.4)
 samus_chest_1:translate(-0.4, -0.3, 0.8)
 samus_chest_1:rotate('z', -20.0)
-samus_chest_1:set_material(green)
+samus_chest_1:set_material(green_r)
 samus_shoulder_joint:add_child(samus_chest_1)
 
 samus_chest_2 = gr.cube('samus_chest_2')
@@ -673,7 +680,7 @@ samus_chest_2:translate(-0.5, -0.5, -0.5)
 samus_chest_2:scale(0.6, 0.15, 0.4)
 samus_chest_2:translate(0.4, -0.3, 0.8)
 samus_chest_2:rotate('z', 20.0)
-samus_chest_2:set_material(green)
+samus_chest_2:set_material(green_r)
 samus_shoulder_joint:add_child(samus_chest_2)
 
 samus_booster_1 = gr.cylinder('samus_booster_1')
@@ -681,7 +688,7 @@ samus_booster_1:scale(0.3, 1, 0.3)
 samus_booster_1:translate(-0.6, -0.8, -0.7)
 samus_booster_1:rotate('x', 30.0)
 samus_booster_1:rotate('z', -20.0)
-samus_booster_1:set_material(red)
+samus_booster_1:set_material(red_r)
 samus_shoulder_joint:add_child(samus_booster_1)
 
 samus_booster_2 = gr.cylinder('samus_booster_2')
@@ -689,7 +696,7 @@ samus_booster_2:scale(0.3, 1, 0.3)
 samus_booster_2:translate(0.6, -0.8, -0.7)
 samus_booster_2:rotate('x', 30.0)
 samus_booster_2:rotate('z', 20.0)
-samus_booster_2:set_material(red)
+samus_booster_2:set_material(red_r)
 samus_shoulder_joint:add_child(samus_booster_2)
 
 samus_hip_joint_pre = gr.node('samus_hip_joint_pre')
@@ -701,7 +708,7 @@ samus_hip_joint_pre:add_child(samus_hip_joint)
 
 samus_hip = gr.sphere('samus_hip')
 samus_hip:scale(0.8, 1.5, 0.8)
-samus_hip:set_material(orange)
+samus_hip:set_material(orange_r)
 samus_hip_joint:add_child(samus_hip)
 
 -- samus_head
@@ -715,7 +722,7 @@ samus_neck_joint_pre:add_child(samus_neck_joint)
 samus_neck = gr.sphere('samus_neck')
 samus_neck:scale(0.5, 0.1, 0.5)
 samus_neck:rotate('x', 30.0)
-samus_neck:set_material(red)
+samus_neck:set_material(red_r)
 samus_neck_joint:add_child(samus_neck)
 
 samus_head_joint_pre = gr.node('samus_head_joint_pre')
@@ -728,7 +735,7 @@ samus_head_joint_pre:add_child(samus_head_joint)
 samus_head = gr.sphere('samus_head')
 samus_head:scale(0.6, 0.7, 0.6)
 samus_head:rotate('x', -20)
-samus_head:set_material(red)
+samus_head:set_material(red_r)
 samus_head_joint:add_child(samus_head)
 
 samus_visor_1 = gr.cube('samus_visor_1')
@@ -736,7 +743,7 @@ samus_visor_1:translate(-0.5, -0.5, -0.5)
 samus_visor_1:scale(0.7, 0.3, 0.46)
 samus_visor_1:translate(0, -0.15, 0.4)
 samus_visor_1:rotate('x', 12)
-samus_visor_1:set_material(green)
+samus_visor_1:set_material(green_r)
 samus_head_joint:add_child(samus_visor_1)
 
 samus_visor_3 = gr.cube('samus_visor_3')
@@ -745,7 +752,7 @@ samus_visor_3:scale(0.2, 0.3, 0.3)
 samus_visor_3:translate(-0.25, -0.0, 0.5)
 samus_visor_3:rotate('y', -20)
 samus_visor_3:rotate('z', 90.0)
-samus_visor_3:set_material(green)
+samus_visor_3:set_material(green_r)
 samus_head_joint:add_child(samus_visor_3)
 
 -- leg joints
@@ -777,25 +784,25 @@ samus_right_leg_joint:add_child(samus_right_leg_top)
 
 -- legs
 samus_left_leg_thigh = gr.sphere('samus_left_leg_thigh')
-samus_left_leg_thigh:set_material(orange)
+samus_left_leg_thigh:set_material(orange_r)
 samus_left_leg_thigh:scale(0.5, 1.5, 0.5)
 samus_left_leg_thigh:translate(0.1, -1.0, 0.0)
 samus_left_leg_joint:add_child(samus_left_leg_thigh)
 
 samus_left_leg_thigh_side = gr.sphere('samus_left_leg_thigh_side')
-samus_left_leg_thigh_side:set_material(green)
+samus_left_leg_thigh_side:set_material(green_r)
 samus_left_leg_thigh_side:scale(0.1, 0.8, 0.2)
 samus_left_leg_thigh_side:translate(0.5, -1.0, 0.0)
 samus_left_leg_joint:add_child(samus_left_leg_thigh_side)
 
 samus_right_leg_thigh = gr.sphere('samus_right_leg_thigh')
-samus_right_leg_thigh:set_material(orange)
+samus_right_leg_thigh:set_material(orange_r)
 samus_right_leg_thigh:scale(0.5, 1.5, 0.5)
 samus_right_leg_thigh:translate(-0.1, -1.0, 0.0)
 samus_right_leg_joint:add_child(samus_right_leg_thigh)
 
 samus_right_leg_thigh_side = gr.sphere('samus_right_leg_thigh_side')
-samus_right_leg_thigh_side:set_material(green)
+samus_right_leg_thigh_side:set_material(green_r)
 samus_right_leg_thigh_side:scale(0.1, 0.8, 0.2)
 samus_right_leg_thigh_side:translate(-0.5, -1.0, 0.0)
 samus_right_leg_joint:add_child(samus_right_leg_thigh_side)
@@ -808,19 +815,19 @@ samus_left_knee_joint = gr.joint('samus_left_knee_joint', {-45, 0, 45}, {-45, 0,
 samus_left_knee_joint_pre:add_child(samus_left_knee_joint)
 
 samus_left_leg_lower = gr.sphere('samus_left_leg_lower')
-samus_left_leg_lower:set_material(orange)
+samus_left_leg_lower:set_material(orange_r)
 samus_left_leg_lower:scale(0.4, 1.2, 0.4)
 samus_left_leg_lower:translate(0, -0.5, 0)
 samus_left_knee_joint:add_child(samus_left_leg_lower)
 
 samus_left_leg_lower_side = gr.sphere('samus_left_leg_lower_side')
-samus_left_leg_lower_side:set_material(green)
+samus_left_leg_lower_side:set_material(green_r)
 samus_left_leg_lower_side:scale(0.1, 0.6, 0.1)
 samus_left_leg_lower_side:translate(0.33, -0.5, 0.0)
 samus_left_knee_joint:add_child(samus_left_leg_lower_side)
 
 samus_left_kneecap = gr.sphere('samus_left_kneecap')
-samus_left_kneecap:set_material(orange)
+samus_left_kneecap:set_material(orange_r)
 samus_left_kneecap:scale(0.3, 0.7, 0.1)
 samus_left_kneecap:rotate('x', 50.0)
 samus_left_kneecap:translate(0.0, 0.2, 0.2)
@@ -834,7 +841,7 @@ samus_left_ankle_joint = gr.joint('samus_left_ankle_joint', {-45, 0, 45}, {-45, 
 samus_left_ankle_joint_pre:add_child(samus_left_ankle_joint)
 
 samus_left_foot = gr.sphere('samus_left_foot')
-samus_left_foot:set_material(orange)
+samus_left_foot:set_material(orange_r)
 samus_left_foot:scale(0.3, 0.7, 0.2)
 samus_left_foot:rotate('x', 100.0)
 samus_left_foot:translate(0.0, -1.1, 0.4)
@@ -848,13 +855,13 @@ samus_right_knee_joint = gr.joint('samus_right_knee_joint', {-45, 0, 45}, {-45, 
 samus_right_knee_joint_pre:add_child(samus_right_knee_joint)
 
 samus_right_leg_lower = gr.sphere('samus_right_leg_lower')
-samus_right_leg_lower:set_material(orange)
+samus_right_leg_lower:set_material(orange_r)
 samus_right_leg_lower:scale(0.4, 1.2, 0.4)
 samus_right_leg_lower:translate(0, -0.5, 0)
 samus_right_knee_joint:add_child(samus_right_leg_lower)
 
 samus_right_leg_lower_side = gr.sphere('samus_right_leg_lower_side')
-samus_right_leg_lower_side:set_material(green)
+samus_right_leg_lower_side:set_material(green_r)
 samus_right_leg_lower_side:scale(0.1, 0.6, 0.1)
 samus_right_leg_lower_side:translate(-0.33, -0.5, 0.0)
 samus_right_knee_joint:add_child(samus_right_leg_lower_side)
@@ -864,7 +871,7 @@ samus_right_ankle_joint_pre:translate(-0.08, -0.5, 0.0)
 samus_right_knee_joint:add_child(samus_right_ankle_joint_pre)
 
 samus_right_kneecap = gr.sphere('samus_right_kneecap')
-samus_right_kneecap:set_material(orange)
+samus_right_kneecap:set_material(orange_r)
 samus_right_kneecap:scale(0.3, 0.7, 0.1)
 samus_right_kneecap:rotate('x', 50.0)
 samus_right_kneecap:translate(0.0, 0.2, 0.2)
@@ -874,7 +881,7 @@ samus_right_ankle_joint = gr.joint('samus_right_ankle_joint', {-45, 0, 45}, {-45
 samus_right_ankle_joint_pre:add_child(samus_right_ankle_joint)
 
 samus_right_foot = gr.sphere('samus_right_foot')
-samus_right_foot:set_material(orange)
+samus_right_foot:set_material(orange_r)
 samus_right_foot:scale(0.3, 0.7, 0.2)
 samus_right_foot:rotate('x', 100.0)
 samus_right_foot:translate(0.0, -1.1, 0.4)
@@ -889,19 +896,19 @@ samus_left_arm_joint = gr.joint('samus_left_arm_joint', {-45, 0, 45}, {-45, 0, 4
 samus_left_arm_joint_pre:add_child(samus_left_arm_joint)
 
 samus_left_arm_pad = gr.sphere('samus_left_arm_pad')
-samus_left_arm_pad:set_material(orange)
+samus_left_arm_pad:set_material(orange_r)
 samus_left_arm_pad:scale(0.8, 0.8, 0.8)
 samus_left_arm_joint:add_child(samus_left_arm_pad)
 
 samus_left_arm_spike1 = gr.sphere('samus_left_arm_spike1')
-samus_left_arm_spike1:set_material(orange)
+samus_left_arm_spike1:set_material(orange_r)
 samus_left_arm_spike1:scale(0.2, 0.6, 0.5)
 samus_left_arm_spike1:rotate('z', -50.0)
 samus_left_arm_spike1:translate(0.35, 0.3, 0)
 samus_left_arm_joint:add_child(samus_left_arm_spike1)
 
 samus_left_arm_spike2 = gr.sphere('samus_left_arm_spike2')
-samus_left_arm_spike2:set_material(orange)
+samus_left_arm_spike2:set_material(orange_r)
 samus_left_arm_spike2:scale(0.2, 0.6, 0.5)
 samus_left_arm_spike2:rotate('z', 10.0)
 samus_left_arm_spike2:translate(-0.1, 0.5, 0)
@@ -915,19 +922,19 @@ samus_right_arm_joint = gr.joint('samus_right_arm_joint', {-45, 0, 45}, {-45, 0,
 samus_right_arm_joint_pre:add_child(samus_right_arm_joint)
 
 samus_right_arm_pad = gr.sphere('samus_right_arm_pad')
-samus_right_arm_pad:set_material(orange)
+samus_right_arm_pad:set_material(orange_r)
 samus_right_arm_pad:scale(0.8, 0.8, 0.8)
 samus_right_arm_joint:add_child(samus_right_arm_pad)
 
 samus_right_arm_spike1 = gr.sphere('samus_right_arm_spike1')
-samus_right_arm_spike1:set_material(orange)
+samus_right_arm_spike1:set_material(orange_r)
 samus_right_arm_spike1:scale(0.2, 0.6, 0.5)
 samus_right_arm_spike1:rotate('z', 50.0)
 samus_right_arm_spike1:translate(-0.35, 0.3, 0)
 samus_right_arm_joint:add_child(samus_right_arm_spike1)
 
 samus_right_arm_spike2 = gr.sphere('samus_right_arm_spike2')
-samus_right_arm_spike2:set_material(orange)
+samus_right_arm_spike2:set_material(orange_r)
 samus_right_arm_spike2:scale(0.2, 0.6, 0.5)
 samus_right_arm_spike2:rotate('z', -10.0)
 samus_right_arm_spike2:translate(0.1, 0.5, 0)
@@ -935,13 +942,13 @@ samus_right_arm_joint:add_child(samus_right_arm_spike2)
 
 -- arms
 samus_left_arm_top = gr.sphere('samus_left_arm_top')
-samus_left_arm_top:set_material(orange)
+samus_left_arm_top:set_material(orange_r)
 samus_left_arm_top:scale(0.4, 1.0, 0.4)
 samus_left_arm_top:translate(0.2, -1.0, 0.0)
 samus_left_arm_joint:add_child(samus_left_arm_top)
 
 samus_right_arm_top = gr.sphere('samus_right_arm_top')
-samus_right_arm_top:set_material(orange)
+samus_right_arm_top:set_material(orange_r)
 samus_right_arm_top:scale(0.4, 1.0, 0.4)
 samus_right_arm_top:translate(-0.2, -1.0, 0.0)
 samus_right_arm_joint:add_child(samus_right_arm_top)
@@ -954,7 +961,7 @@ samus_left_elbow_joint = gr.joint('samus_left_elbow_joint', {-45, 0, 45}, {-45, 
 samus_left_elbow_joint_pre:add_child(samus_left_elbow_joint)
 
 samus_left_arm_lower = gr.sphere('samus_left_arm_lower')
-samus_left_arm_lower:set_material(orange)
+samus_left_arm_lower:set_material(orange_r)
 samus_left_arm_lower:scale(0.3, 0.6, 0.3)
 samus_left_arm_lower:translate(0, -0.3, 0)
 samus_left_elbow_joint:add_child(samus_left_arm_lower)
@@ -967,7 +974,7 @@ samus_left_wrist_joint = gr.joint('samus_left_wrist_joint', {-45, 0, 45}, {-45, 
 samus_left_wrist_joint_pre:add_child(samus_left_wrist_joint)
 
 samus_left_hand = gr.sphere('samus_left_hand')
-samus_left_hand:set_material(orange)
+samus_left_hand:set_material(orange_r)
 samus_left_hand:scale(0.1, 0.4, 0.2)
 samus_left_wrist_joint:add_child(samus_left_hand)
 
@@ -979,7 +986,7 @@ samus_left_thumb_joint = gr.joint('samus_left_thumb_joint', {-45, 0, 45}, {-45, 
 samus_left_thumb_joint_pre:add_child(samus_left_thumb_joint)
 
 samus_left_thumb = gr.sphere('samus_left_thumb')
-samus_left_thumb:set_material(orange)
+samus_left_thumb:set_material(orange_r)
 samus_left_thumb:scale(0.07, 0.25, 0.1)
 samus_left_thumb_joint:add_child(samus_left_thumb)
 
@@ -991,7 +998,7 @@ samus_right_elbow_joint = gr.joint('samus_right_elbow_joint', {-45, 0, 45}, {-45
 samus_right_elbow_joint_pre:add_child(samus_right_elbow_joint)
 
 samus_right_arm_lower = gr.cylinder('samus_right_arm_lower')
-samus_right_arm_lower:set_material(dark_green)
+samus_right_arm_lower:set_material(dark_green_r)
 samus_right_arm_lower:scale(0.45, 1.8, 0.45)
 samus_right_arm_lower:translate(0, -1.5, 0)
 samus_right_elbow_joint:add_child(samus_right_arm_lower)
@@ -1017,16 +1024,30 @@ samus_hip_joint:rotate('x', -22)
 samus_torso_joint:rotate('x', 30)
 samus_right_arm_joint:rotate('x', -39)
 
-samus:animate(0, 12, 'translate', {0, -14, 0}, 'ease-in')
-samus:animate(0, 3, 'rotate', {90, 0, 0}, 'linear')
-samus:animate(3, 3, 'rotate', {90, 0, 0}, 'linear')
-samus:animate(6, 3, 'rotate', {90, 0, 0}, 'linear')
+-- samus:translate(0, -14, 0)
+-- samus_head_joint:rotate('x', -30)
+-- samus_head_joint:rotate('y', -20)
+-- rootnode:translate(4, 0, -8)
+-- rootnode:rotate('y', 30)
+
+samus:animate(0, 36, 'translate', {0, -14, 0}, 'ease-in')
+samus:animate(0, 6, 'rotate', {90, 0, 0}, 'linear')
+samus:animate(3, 6, 'rotate', {90, 0, 0}, 'linear')
+samus:animate(6, 6, 'rotate', {90, 0, 0}, 'linear')
 samus:animate(9, 3, 'rotate', {90, 0, 0}, 'linear')
-rootnode:animate(12, 1, 'translate', {0, -1, 0}, 'linear')
-rootnode:animate(13, 1, 'translate', {0, 1, 0}, 'linear')
-rootnode:animate(14, 6, 'translate', {4, 0, -8}, 'ease-out')
-samus_head_joint:animate(16, 4, 'rotate', {-30, 0, 0}, 'linear')
-samus_head_joint:animate(17, 3, 'rotate', {0, -20, 0}, 'linear')
+samus:animate(12, 3, 'rotate', {90, 0, 0}, 'linear')
+samus:animate(15, 3, 'rotate', {90, 0, 0}, 'linear')
+samus:animate(18, 3, 'rotate', {90, 0, 0}, 'linear')
+samus:animate(21, 3, 'rotate', {90, 0, 0}, 'linear')
+samus:animate(24, 3, 'rotate', {90, 0, 0}, 'linear')
+samus:animate(27, 3, 'rotate', {90, 0, 0}, 'linear')
+samus:animate(30, 3, 'rotate', {90, 0, 0}, 'linear')
+samus:animate(33, 3, 'rotate', {90, 0, 0}, 'linear')
+rootnode:animate(36, 3, 'translate', {0, -1, 0}, 'linear')
+rootnode:animate(39, 3, 'translate', {0, 1, 0}, 'linear')
+rootnode:animate(42, 18, 'translate', {4, 0, -8}, 'ease-out')
+samus_head_joint:animate(48, 12, 'rotate', {-30, 0, 0}, 'linear')
+samus_head_joint:animate(51, 9, 'rotate', {0, -20, 0}, 'linear')
 
 white_light = gr.light({2, 12, 30}, {0.9, 0.9, 0.9}, {1, 0, 0})
 white_area_light = gr.area_light({2, 12, 30}, {0.9, 0.9, 0.9}, {1, 0, 0}, {0, 0, -1}, {0, 1, 0}, 10, 100)
@@ -1036,14 +1057,13 @@ blue_light_2 = gr.light({0, 25, -12.5}, {0.25, 0.95, 0.95}, {1, 0, 0})
 blue_light_3 = gr.light({12.5, 25, 0}, {0.25, 0.95, 0.95}, {1, 0, 0})
 blue_light_4 = gr.light({-12.5, 25, 0}, {0.25, 0.95, 0.95}, {1, 0, 0})
 
-gr.render(rootnode, './Generated/scene1/',
-330, 135,
---660, 270,
+gr.render(rootnode, './Generated/final-scene1/',
+--330, 135,
+660, 270,
 --2100, 900,
 {0, 5, 15}, {0, 0, 1}, {0, 1, 0}, 
 --{0, 120, 0}, {0, -1, 0}, {0, 0, -1}, 
-
-50, {0.3, 0.3, 0.3}, {blue_light_1}, 21, 
+50, {0.3, 0.3, 0.3}, {blue_light_1, blue_light_2, blue_light_3, blue_light_4}, 60, 
 --0.1
-1
+0.8
 )
